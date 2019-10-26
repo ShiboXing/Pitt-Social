@@ -1,2 +1,2 @@
-# Pitt_Social-
+# Pitt_Social
 JDBC Database App 
