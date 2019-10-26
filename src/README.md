@@ -1,6 +1,6 @@
-# Pitt_Social
-######JDBC Database App 
-####project owners: 
+# Pitt_Social <br>
+######JDBC Database App <br>
+####project owners: <br>
 Zhuolun Li, 
 Fangzheng Guo, 
 Shibo Xing
