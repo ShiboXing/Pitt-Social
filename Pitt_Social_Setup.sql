@@ -9,7 +9,7 @@ drop table if exists friend cascade;
 drop table if exists pendingFriend cascade;
 drop table if exists message cascade;
 drop table if exists messageRecipient cascade;
-drop table if exists group cascade;
+drop table if exists "group" cascade;
 drop table if exists groupMember cascade;
 drop table if exists pendingGroupMember cascade;
 
@@ -68,11 +68,11 @@ create table messageRecipient
     constraint messageRecipient_fk2 foreign key (userID) references profile(user_id)
 );
 
-create table group
+create table "group"
 (
     gID int,
     name varchar(50),
-    limit int,
+    "limit" int,
     description varchar(200),
     constraint group_pk primary key (gID) not deferrable
 );
@@ -83,7 +83,7 @@ create table groupMember
     userId int,
     role varchar(20),
     constraint groupMember_pk primary key (gID,userId) not deferrable,
-    constraint groupMember_fk1 foreign key (gId) references group(gID),
+    constraint groupMember_fk1 foreign key (gId) references "group"(gID),
     constraint groupMember_fk2 foreign key (userId) references profile(user_id)
 );
 
@@ -92,14 +92,13 @@ create table pendingGroupMember
     gID int,
     userId int,
     message varchar(200),
-    constraint pendingGroupMember primary key (gID,userId) not deferrable,
-    constraint pendingGroupMember_fk1 foreign key (gId) references group(gID),
+    constraint pendingGroupMember_pk primary key (gID,userId) not deferrable,
+    constraint pendingGroupMember_fk1 foreign key (gId) references "group"(gID),
     constraint pendingGroupMember_fk2 foreign key (userId) references profile(user_id)
-
 );
 
 alter table message
-    add constraint message_fk3 foreign key (toGroupIDs) references group(gID);
+    add constraint message_fk3 foreign key (toGroupID) references "group"(gID);
 
 
 
