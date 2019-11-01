@@ -74,7 +74,8 @@ create table "group"
     name varchar(50),
     "limit" int,
     description varchar(200),
-    constraint group_pk primary key (gID) not deferrable
+    constraint group_pk primary key (gID) not deferrable,
+    constraint group_ck check ("limit">0)
 );
 
 create table groupMember
