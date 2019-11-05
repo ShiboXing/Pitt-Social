@@ -51,8 +51,8 @@ create table message
     msgID int,
     fromID int,
     message varchar(200),
-    toUserID int,
-    toGroupID int,
+    toUserID int default NULL,
+    toGroupID int default NULL,
     timeSent timestamp,
     constraint message_pk primary key (msgID) not deferrable,
     constraint message_fk1 foreign key (fromID) references profile(user_id),
@@ -116,3 +116,38 @@ create trigger autoSave
     ON message
     FOR EACH ROW
 execute procedure saveRecipient();
+
+drop trigger if exists validMessage;
+create trigger validMessage
+    before insert on message
+    for each row
+    execute procedure checkValidMessage(new.fromID, new.toUserID, new.toGroupID);
+
+create or replace function checkValidMessage(fromUser int, toUser int, toGroup int) returns trigger as
+    $$
+    declare
+        friendsNum integer;
+        groupNum integer;
+    begin
+        if (toGroup is NULL) then
+            select count(*) into friendsNum from (select f.userID1, f.userID2 from friend as f where (f.userID1 = fromUser and f.userID2 = toUser) or (f.userID2 = fromUser and f.userID1 = toUser)) as t;
+            if (friendsNum > 0) then
+            return new;
+            else
+            raise exception 'violate constraint areFriends';
+            end if;
+        else
+            select count(*) from groupMember g into groupNum where g.gId = toGroup and g.userId = fromUser
+            if (groupNum > 0) then
+            return new;
+            else
+            raise exception 'violate constraint inGroup';
+            end if;
+        end if;
+    end;
+    $$ LANGUAGE plpgsql;
+
+
+
+insert into profile
+values(1,'Tnag wttr','vvb@nfiu.org','qwefrb','1997-08-23','2019-04-04 19:22:40');
