@@ -56,7 +56,8 @@ create table message
     timeSent timestamp,
     constraint message_pk primary key (msgID) not deferrable,
     constraint message_fk1 foreign key (fromID) references profile(user_id),
-    constraint message_fk2 foreign key (toUserID) references profile(user_id)
+    constraint message_fk2 foreign key (toUserID) references profile(user_id),
+    constraint validMessage check ((toUserID is null and toGroupID is not null) or (toUserID is not null and toGroupID is null))
 );
 
 create table messageRecipient
