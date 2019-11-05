@@ -109,7 +109,7 @@ begin
 end;
 $$ language plpgsql;
 
-drop trigger if exists autoSave;
+drop trigger if exists autoSave on message;
 create trigger autoSave
     AFTER
         INSERT
@@ -117,27 +117,21 @@ create trigger autoSave
     FOR EACH ROW
 execute procedure saveRecipient();
 
-drop trigger if exists validMessage;
-create trigger validMessage
-    before insert on message
-    for each row
-    execute procedure checkValidMessage(new.fromID, new.toUserID, new.toGroupID);
-
-create or replace function checkValidMessage(fromUser int, toUser int, toGroup int) returns trigger as
+create or replace function checkValidMessage() returns trigger as
     $$
     declare
         friendsNum integer;
         groupNum integer;
     begin
-        if (toGroup is NULL) then
-            select count(*) into friendsNum from (select f.userID1, f.userID2 from friend as f where (f.userID1 = fromUser and f.userID2 = toUser) or (f.userID2 = fromUser and f.userID1 = toUser)) as t;
+        if (new.toGroupID is NULL) then
+            select count(*) into friendsNum from (select f.userID1, f.userID2 from friend as f where (f.userID1 = new.fromID and f.userID2 = new.toUserID) or (f.userID2 = new.fromID and f.userID1 = new.toUserID)) as t;
             if (friendsNum > 0) then
             return new;
             else
             raise exception 'violate constraint areFriends';
             end if;
         else
-            select count(*) from groupMember g into groupNum where g.gId = toGroup and g.userId = fromUser
+            select count(*) into groupNum from groupMember g where g.gId = new.toGroupID and g.userId = new.fromID;
             if (groupNum > 0) then
             return new;
             else
@@ -147,7 +141,14 @@ create or replace function checkValidMessage(fromUser int, toUser int, toGroup i
     end;
     $$ LANGUAGE plpgsql;
 
+drop trigger if exists validMessage on message;
+create trigger validMessage
+    before insert on message
+    for each row
+    execute procedure checkValidMessage();
 
 
-insert into profile
-values(1,'Tnag wttr','vvb@nfiu.org','qwefrb','1997-08-23','2019-04-04 19:22:40');
+
+
+
+
