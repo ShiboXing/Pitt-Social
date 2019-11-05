@@ -30,7 +30,7 @@ create table friend
     userID1 int,
     userID2 int,
     JDate date,
-    message varchar(20),
+    message varchar(200),
     constraint friend_pk primary key (userID1,userID2) not deferrable,
     constraint profile_fk1 foreign key (userID1) references profile(user_id),
     constraint profile_fk2 foreign key (userID2) references profile(user_id)
