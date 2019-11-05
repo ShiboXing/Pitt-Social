@@ -101,7 +101,18 @@ create table pendingGroupMember
 alter table message
     add constraint message_fk3 foreign key (toGroupID) references "group"(gID);
 
+create or replace function saveRecipient() returns trigger as
+$$
+begin
+    insert into messageRecipient values (new.msgID, new.toUserID);
+    return new;
+end;
+$$ language plpgsql;
 
-
-insert into profile
-values(1,'Tnag wttr','vvb@nfiu.org','qwefrb','1997-08-23','2019-04-04 19:22:40');
+drop trigger if exists autoSave;
+create trigger autoSave
+    AFTER
+        INSERT
+    ON message
+    FOR EACH ROW
+execute procedure saveRecipient();
