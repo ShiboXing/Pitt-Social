@@ -16,7 +16,7 @@ drop table if exists pendingGroupMember cascade;
 
 create table profile
 (
-    user_id int,
+    user_id serial,
     name varchar(50),
     email varchar(50),
     password varchar(50),
@@ -48,7 +48,7 @@ create table pendingFriend
 
 create table message
 (
-    msgID int,
+    msgID serial,
     fromID int,
     message varchar(200),
     toUserID int default NULL,
@@ -71,7 +71,7 @@ create table messageRecipient
 
 create table "group"
 (
-    gID int,
+    gID serial,
     name varchar(50),
     "limit" int,
     description varchar(200),
@@ -147,6 +147,27 @@ create trigger validMessage
     before insert on message
     for each row
     execute procedure checkValidMessage();
+
+create or replace function ifNewFriends() returns trigger as
+$$
+declare friendNum int;
+begin
+    select count(*) into friendNum from friend f where f.userID1 = new.userID2 and f.userID2 = new.userID1;
+    if (friendNum > 0) then
+        raise exception 'violate constraint already friends';
+    end if;
+    return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists validFriends on friend;
+create trigger validFriends
+    before
+        INSERT
+    ON friend
+    FOR EACH ROW
+execute procedure ifNewFriends();
+
 
 
 
