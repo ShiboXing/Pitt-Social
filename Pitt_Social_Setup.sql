@@ -74,7 +74,8 @@ create table "group"
     name varchar(50),
     "limit" int,
     description varchar(200),
-    constraint group_pk primary key (gID) not deferrable
+    constraint group_pk primary key (gID) not deferrable,
+    constraint group_ck check ("limit">0)
 );
 
 create table groupMember
@@ -102,3 +103,5 @@ alter table message
 
 
 
+insert into profile
+values(1,'Tnag wttr','vvb@nfiu.org','qwefrb','1997-08-23','2019-04-04 19:22:40');
