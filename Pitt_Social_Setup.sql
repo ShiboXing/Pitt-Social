@@ -103,3 +103,5 @@ alter table message
 
 
 
+insert into profile
+values(1,'Tnag wttr','vvb@nfiu.org','qwefrb','1997-08-23','2019-04-04 19:22:40');
