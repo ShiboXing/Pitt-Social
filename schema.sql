@@ -8,9 +8,9 @@ set search_path to pitt_social;
 drop table if exists profile cascade;
 drop table if exists friend cascade;
 drop table if exists pendingFriend cascade;
-drop table if exists message cascade;
+drop table if exists messageInfo cascade;
 drop table if exists messageRecipient cascade;
-drop table if exists "group" cascade;
+drop table if exists groupInfo cascade;
 drop table if exists groupMember cascade;
 drop table if exists pendingGroupMember cascade;
 
@@ -47,7 +47,7 @@ create table pendingFriend
     constraint pendingFriend_fk2 foreign key (toID) references profile(user_id)
 );
 
-create table message
+create table messageInfo
 (
     msgID int,
     fromID int,
@@ -66,18 +66,18 @@ create table messageRecipient
     msgID int,
     userID int,
     constraint messageRecipient_pk primary key (msgID,userID) not deferrable,
-    constraint messageRecipient_fk1 foreign key (msgID) references message (msgID),
+    constraint messageRecipient_fk1 foreign key (msgID) references messageInfo (msgID),
     constraint messageRecipient_fk2 foreign key (userID) references profile(user_id)
 );
 
-create table "group"
+create table groupInfo
 (
     gID int,
     name varchar(50),
-    "limit" int,
+    size int,
     description varchar(200),
     constraint group_pk primary key (gID) not deferrable,
-    constraint group_ck check ("limit">0) --a group should have valid number of members
+    constraint group_ck check (size>0) --a group should have valid number of members
 );
 
 create table groupMember
@@ -86,7 +86,7 @@ create table groupMember
     userId int,
     role varchar(20),
     constraint groupMember_pk primary key (gID,userId) not deferrable,
-    constraint groupMember_fk1 foreign key (gId) references "group"(gID),
+    constraint groupMember_fk1 foreign key (gId) references groupInfo(gID),
     constraint groupMember_fk2 foreign key (userId) references profile(user_id)
 );
 
@@ -96,12 +96,12 @@ create table pendingGroupMember
     userId int,
     message varchar(200),
     constraint pendingGroupMember_pk primary key (gID,userId) not deferrable,
-    constraint pendingGroupMember_fk1 foreign key (gId) references "group"(gID),
+    constraint pendingGroupMember_fk1 foreign key (gId) references groupInfo(gID),
     constraint pendingGroupMember_fk2 foreign key (userId) references profile(user_id)
 );
 
-alter table message
-    add constraint message_fk3 foreign key (toGroupID) references "group"(gID);
+alter table messageInfo
+    add constraint message_fk3 foreign key (toGroupID) references groupInfo(gID);
 
 
 

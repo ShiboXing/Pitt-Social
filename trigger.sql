@@ -9,11 +9,11 @@ begin
 end;
 $$ language plpgsql;
 
-drop trigger if exists autoSave on message;
+drop trigger if exists autoSave on messageInfo;
 create trigger autoSave
     AFTER
         INSERT
-    ON message
+    ON messageInfo
     FOR EACH ROW
 execute procedure saveRecipient();
 
@@ -45,7 +45,7 @@ create or replace function checkValidMessage() returns trigger as
 
 drop trigger if exists validMessage on message;
 create trigger validMessage
-    before insert on message
+    before insert on messageInfo
     for each row
     execute procedure checkValidMessage();
 
