@@ -79,9 +79,7 @@ $$
     declare
         new_user_id integer;
     begin
-        select max(user_id) from profile into new_user_id;
-        new_user_id=new_user_id+1;
-        insert into profile values(new_user_id,user_name,user_email,user_password,user_date_of_birth,user_lastlogin);
+        insert into profile values(user_name,user_email,user_password,user_date_of_birth,user_lastlogin);
     end;
 $$ language plpgsql;
 
