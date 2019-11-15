@@ -88,21 +88,36 @@ $$ language plpgsql;
     '1997-09-10','2019-01-17 07:35:18.000000');*/
 
 --returnUserName
-drop procedure if exists returnUserName (userid int);
-create or replace procedure returnUserName(userid int) as
+drop function if exists returnUserName (userid int);
+create or replace function returnUserName(user_id int) returns varchar as
     $$
-        
+        declare
+            Name varchar;
+        begin
+            select name into Name from profile p where p.user_id = user_id;
+            return Name;
+        end;
+    $$ language plpgsql;
 
 --initiateFriendship
 
 drop procedure if exists initiateFriendship(loginUser int, otherUser int, message varchar(200));
-create or replace procedure createUser(user_name varchar(50), user_email varchar(50),user_password varchar(50),
-user_date_of_birth date, user_lastlogin timestamp) as
+create or replace procedure initiateFriendship(loginUser int, otherUser int, message varchar(200)) as
 $$
-    declare
-        new_user_id integer;
     begin
-        insert into profile values(user_name,user_email,user_password,user_date_of_birth,user_lastlogin);
+        insert into pendingFriend values(loginUser, otherUser, message);
     end;
 $$ language plpgsql;
+
+--login
+drop function if exists login(inputEmail varchar(50), inputPassword varchar(50));
+create or replace function login(inputEmail varchar(50), inputPassword varchar(50)) returns int as
+    $$
+        declare
+            thisUserid varchar;
+        begin
+            select user_id into thisUserid from profile p where p.email = inputEmail and p.password = inputPassword;
+            return thisUserid;
+        end;
+    $$ language plpgsql;
 
