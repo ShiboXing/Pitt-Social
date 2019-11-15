@@ -4,11 +4,16 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class Driver{
+public class Driver {
 
     public static void main(String args[]) throws ClassNotFoundException, SQLException, IOException {
-        PittSocial PS=new PittSocial("postgres","team3","jdbc:postgresql://localhost/postgres");
-
+        try {
+            DataManager dataManager = new DataManager();
+            dataManager.initDatabase();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        PittSocial PS = new PittSocial("postgres", "team3", "jdbc:postgresql://localhost/postgres");
 
 
     }
