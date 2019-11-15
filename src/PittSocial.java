@@ -26,14 +26,15 @@ public class PittSocial {
         String line = "";
         // read script line by line
         while ((line = reader.readLine()) != null) {
-            lines.append(line);
+            lines.append(line+'\n');
         }
         System.out.println("queries: " + lines.toString());
         statement.execute(lines.toString());
+        //statement.execute("select * from profile;");
     }
 
     public void createUser() throws SQLException {
-        //PreparedStatement st=_conn.prepareStatement("call createuser('testest',\t'primis.in@placerateget.com',\t'5679',\n" +
-        // "    '1997-09-10','2019-01-17 07:35:18.000000');");
+
+        PreparedStatement st=_conn.prepareStatement("call createuser(?,?,?,?,?);");
     }
 }

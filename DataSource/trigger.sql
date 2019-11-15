@@ -1,5 +1,6 @@
 --Fangzheng Guo, Zhuolun Li, Shibo Xing
 
+set search_path to pitt_social;
 --automatically save the ID and recipient of each message to messRecipient
 create or replace function saveRecipient() returns trigger as
 $$
@@ -73,19 +74,18 @@ execute procedure ifNewFriends();
 
 --Phase 2:
 --createUser
-drop procedure if exists createuser(name varchar, email varchar, password varchar, date_of_birth date, lastlogin timestamp);
+drop procedure if exists createuser(user_name varchar(50), email varchar(50), user_password varchar(50)
+, user_date_of_birth date, user_lastlogin timestamp);
 create procedure createUser(user_name varchar(50), user_email varchar(50),user_password varchar(50),
 user_date_of_birth date, user_lastlogin timestamp) as
 $$
-    declare
-        new_user_id integer;
     begin
-        insert into profile values(user_name,user_email,user_password,user_date_of_birth,user_lastlogin);
+        insert into profile(name, email, password, date_of_birth, lastlogin) values(user_name,user_email,user_password,user_date_of_birth,user_lastlogin);
     end;
 $$ language plpgsql;
 
-/*call createuser('testest',	'primis.in@placerateget.com',	'5679',
-    '1997-09-10','2019-01-17 07:35:18.000000');*/
+call createuser('testest',	'primis.in@placerateget.com',	'5679',
+    '1997-09-10','2019-01-17 07:35:18.000000');
 
 --initiate
 
