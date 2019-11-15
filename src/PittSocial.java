@@ -19,7 +19,7 @@ public class PittSocial {
         PreparedStatement st=_conn.prepareStatement("call createuser(?,?,?,?,?);");
     }
 
-    public void login() throws {
+    public void login() throws IOException {
 //        TODO: login and change current user
 //        this.currentUser
     }
