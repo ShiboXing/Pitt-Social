@@ -5,7 +5,7 @@ import java.util.Properties;
 
 public class Driver {
     public static void main(String args[]) throws ClassNotFoundException, SQLException {
-        PittSocial PS=new PittSocial("postgres","team3","jdbc:postgresql://localhost/postgres");
+        PittSocial PS = new PittSocial("postgres", "team3", "jdbc:postgresql://localhost/postgres");
 
 
     }
