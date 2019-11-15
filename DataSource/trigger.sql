@@ -74,7 +74,7 @@ execute procedure ifNewFriends();
 --Phase 2:
 --createUser
 drop procedure if exists createuser(name varchar, email varchar, password varchar, date_of_birth date, lastlogin timestamp);
-create or replace procedure createUser(user_name varchar(50), user_email varchar(50),user_password varchar(50),
+create procedure createUser(user_name varchar(50), user_email varchar(50),user_password varchar(50),
 user_date_of_birth date, user_lastlogin timestamp) as
 $$
     declare
@@ -83,7 +83,6 @@ $$
         insert into profile values(user_name,user_email,user_password,user_date_of_birth,user_lastlogin);
     end;
 $$ language plpgsql;
-
 
 /*call createuser('testest',	'primis.in@placerateget.com',	'5679',
     '1997-09-10','2019-01-17 07:35:18.000000');*/
