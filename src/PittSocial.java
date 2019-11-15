@@ -14,6 +14,6 @@ public class PittSocial {
 
     public void createUser() throws SQLException {
         //PreparedStatement st=_conn.prepareStatement("call createuser('testest',\t'primis.in@placerateget.com',\t'5679',\n" +
-                "    '1997-09-10','2019-01-17 07:35:18.000000');");
+               // "    '1997-09-10','2019-01-17 07:35:18.000000');");
     }
 }
