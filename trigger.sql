@@ -43,7 +43,7 @@ create or replace function checkValidMessage() returns trigger as
     end;
     $$ LANGUAGE plpgsql;
 
-drop trigger if exists validMessage on message;
+drop trigger if exists validMessage on messageInfo;
 create trigger validMessage
     before insert on messageInfo
     for each row
@@ -69,3 +69,21 @@ create trigger validFriends
     ON friend
     FOR EACH ROW
 execute procedure ifNewFriends();
+
+
+--Phase 2:
+drop procedure createuser(name varchar, email varchar, password varchar, date_of_birth date, lastlogin timestamp);
+create or replace procedure createUser(user_name varchar(50), user_email varchar(50),user_password varchar(50),
+user_date_of_birth date, user_lastlogin timestamp) as
+$$
+    declare
+        new_user_id integer;
+    begin
+        select max(user_id) from profile into new_user_id;
+        new_user_id=new_user_id+1;
+        insert into profile values(new_user_id,user_name,user_email,user_password,user_date_of_birth,user_lastlogin);
+    end;
+$$ language plpgsql;
+
+/*call createuser('testest',	'primis.in@placerateget.com',	'5679',
+    '1997-09-10','2019-01-17 07:35:18.000000');*/

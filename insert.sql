@@ -162,7 +162,6 @@ INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (54,23,'06/01/2018',
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (80,74,'02/18/2017','ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (92,8,'01/03/2018','consectetuer adipiscing elit. Curabitur sed tortor. Integer');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (8,6,'03/08/2018','elit fermentum risus, at fringilla purus');
-INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (52,59,'04/16/2017','ante');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (49,85,'03/17/2018','Aliquam erat');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (33,31,'03/30/2018','iaculis, lacus pede sagittis augue, eu tempor erat neque');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (16,71,'01/03/2018','odio. Nam interdum enim non nisi. Aenean eget');
@@ -203,7 +202,6 @@ INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (45,4,'04/24/2017','
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (38,68,'12/10/2017','feugiat metus sit amet ante.');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (97,16,'08/11/2017','mauris sagittis placerat. Cras dictum ultricies ligula. Nullam enim. Sed');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (13,14,'01/01/2018','ornare sagittis felis. Donec tempor, est ac mattis semper,');
-INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (51,31,'03/04/2017','dignissim magna a tortor. Nunc commodo auctor');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (87,7,'04/15/2017','Curae; Phasellus ornare. Fusce mollis. Duis sit amet diam');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (70,83,'11/21/2017','Pellentesque ultricies dignissim lacus. Aliquam');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (62,94,'01/02/2017','mi. Aliquam');
@@ -234,7 +232,6 @@ INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (32,74,'05/14/2018',
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (72,1,'08/07/2017','ipsum sodales purus, in molestie tortor nibh sit amet orci.');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (69,57,'11/19/2016','dui lectus rutrum urna, nec luctus felis');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (70,64,'02/21/2018','Donec est. Nunc ullamcorper, velit in aliquet lobortis, nisi nibh');
-INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (37,52,'06/08/2017','faucibus orci luctus et ultrices posuere cubilia Curae;');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (10,33,'06/16/2018','enim nisl elementum purus, accumsan interdum libero dui');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (23,62,'06/02/2017','diam at');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (53,15,'06/13/2018','dictum');
@@ -250,11 +247,9 @@ INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (54,51,'12/11/2017',
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (37,75,'08/25/2017','dui, nec tempus mauris erat eget ipsum. Suspendisse sagittis.');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (16,56,'10/17/2018','quis arcu vel');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (6,64,'11/25/2016','orci quis lectus. Nullam');
-INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (90,16,'08/10/2017','nulla ante,');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (77,82,'06/26/2018','sem molestie sodales. Mauris blandit enim consequat purus.');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (53,41,'07/31/2018','Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem,');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (85,47,'08/12/2018','non arcu. Vivamus');
-INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (75,25,'08/18/2017','Sed auctor odio a purus.');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (12,67,'04/14/2018','Nullam nisl. Maecenas malesuada');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (76,96,'03/23/2018','vitae odio sagittis semper. Nam tempor diam dictum');
 INSERT INTO "friend" (userID1,userID2,JDate,message) VALUES (23,80,'03/12/2017','felis orci,');
