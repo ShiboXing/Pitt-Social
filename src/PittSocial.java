@@ -5,14 +5,14 @@ import java.util.Properties;
 import java.sql.*;
 
 public class PittSocial {
-    Connection _conn;
+    private Connection _conn;
 
     public PittSocial(String username, String password, String url) throws ClassNotFoundException, SQLException, IOException {
-        Class c=Class.forName("org.postgresql.Driver");
-        Properties props =new Properties();
-        props.setProperty("user",username);
-        props.setProperty("password",password);
-        _conn =DriverManager.getConnection(url,props);
+        Class c = Class.forName("org.postgresql.Driver");
+        Properties props = new Properties();
+        props.setProperty("user", username);
+        props.setProperty("password", password);
+        this._conn = DriverManager.getConnection(url, props);
         /* set up the schema */
         executeSQLFile("DataSource/schema.sql");
         executeSQLFile("DataSource/trigger.sql");
