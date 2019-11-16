@@ -132,7 +132,6 @@ $$
         select gid into thisGroupId from groupinfo where groupinfo.name = groupname and groupinfo.size = groupsize and groupinfo.description = groupdescription;
         insert into groupmember(gid, userid, role) values (thisgroupid, thisuserid, 'manager');
     end;
-$$ language plpgsql;
 
 --initiateAddingGroup
 drop procedure if exists initiateAddingGroup(thisUserId int, groupId int, Addinginquiry varchar(200));
@@ -149,6 +148,7 @@ drop function if exists showAllRequests(thisuserid int);
 create or replace function showAllRequests(thisuserid int) returns table(fromid int, requesttype varchar(20), content varchar(200)) as
     $$
         declare
+$$ language plpgsql;
         friendrequest pendingfriend;
         groupmember pendinggroupmember;
         friendcursor cursor for select * from friendrequest;
