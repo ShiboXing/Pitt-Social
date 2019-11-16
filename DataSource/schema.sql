@@ -72,7 +72,7 @@ create table messageRecipient
 
 create table groupInfo
 (
-    gID int,
+    gID serial,
     name varchar(50),
     size int,
     description varchar(200),
