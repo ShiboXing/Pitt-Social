@@ -6,17 +6,20 @@ public class PittSocial {
     private Connection _conn;
     private String currentUser;
 
-    public PittSocial(String username, String password, String url) throws ClassNotFoundException, SQLException {
-        Class c = Class.forName("org.postgresql.Driver");
-        Properties props = new Properties();
-        props.setProperty("user", username);
-        props.setProperty("password", password);
-        this._conn = DriverManager.getConnection(url, props);
+    public PittSocial(Connection new_conn) throws ClassNotFoundException, SQLException {
+        _conn=new_conn;
     }
 
-    public void createUser() throws SQLException {
-
-        PreparedStatement st=_conn.prepareStatement("call createuser(?,?,?,?,?);");
+    public void createUser(String username,String email, String password,String birthDate) throws SQLException {
+        CallableStatement st=_conn.prepareCall("call createuser(?,?,?,?,null)");
+        st.setString(1,username);
+        st.setString(2,email);
+        st.setString(3,password);
+        st.setDate(4, Date.valueOf(birthDate));
+        System.out.println(st);
+        ResultSet rs=st.executeQuery();
+        //ResultSet rs=_conn.createStatement().executeQuery(st.toString());
+        System.out.println(rs);
     }
 
     public void login() throws IOException {

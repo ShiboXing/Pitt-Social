@@ -85,7 +85,8 @@ $$
 $$ language plpgsql;
 
 call createuser('testest',	'primis.in@placerateget.com',	'5679',
-    '1997-09-10','2019-01-17 07:35:18.000000');
+    '1997-09-10',null);
+call createuser('Kirk','kk@ha.org','iii','1997-09-10',null);
 
 --returnUserName
 drop function if exists returnUserName (userid int);

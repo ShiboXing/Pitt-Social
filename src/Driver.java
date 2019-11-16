@@ -7,14 +7,12 @@ import java.util.Properties;
 public class Driver {
 
     public static void main(String args[]) throws ClassNotFoundException, SQLException, IOException {
-        try {
-            DataManager dataManager = new DataManager();
-            dataManager.initDatabase();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        PittSocial PS = new PittSocial("postgres", "team3", "jdbc:postgresql://localhost/postgres");
 
+        DataManager dataManager= new DataManager();
+        dataManager.initDatabase();
+        //schema.sql contains 'set search_path to pitt_social;' !!!
+        PittSocial PS= new PittSocial(dataManager.getConnection());
+        PS.createUser("Kirk","kk@ha.org","iii","1997-09-10");
 
     }
 }
