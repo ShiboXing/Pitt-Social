@@ -19,7 +19,7 @@ create table profile
 (
     user_id serial,
     name varchar(50),
-    email varchar(50),
+    email varchar(50) unique,
     password varchar(50),
     date_of_birth date,
     lastlogin timestamp,

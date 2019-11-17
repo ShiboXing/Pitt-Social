@@ -10,9 +10,10 @@ public class Driver {
 
         DataManager dataManager= new DataManager();
         dataManager.initDatabase();
-        //schema.sql contains 'set search_path to pitt_social;' !!!
+        /*---- schema.sql contains 'set search_path to pitt_social;' !!! --- */
         PittSocial PS= new PittSocial(dataManager.getConnection());
-        PS.createUser("Kirk","kk@ha.org","iii","1997-09-10");
-
+        PS.createUser("didi","dd@dd.org","dd","1900-09-10");
+        PS.createUser("didi","3dd@dd.org","dd","1900-09-10");
+        PS.login("3dd@dd.org","dd");
     }
 }
