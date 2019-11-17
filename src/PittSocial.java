@@ -16,10 +16,8 @@ public class PittSocial {
         st.setString(2,email);
         st.setString(3,password);
         st.setDate(4, Date.valueOf(birthDate));
+        st.execute();
         System.out.println(st);
-        ResultSet rs=st.executeQuery();
-        //ResultSet rs=_conn.createStatement().executeQuery(st.toString());
-        System.out.println(rs);
     }
 
     public void login() throws IOException {
