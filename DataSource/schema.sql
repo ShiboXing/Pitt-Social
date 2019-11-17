@@ -44,7 +44,8 @@ create table pendingFriend
     message varchar(200),
     constraint pendingFriend_pk primary key (fromID, toID) not deferrable,
     constraint pendingFriend_fk1 foreign key (fromID) references profile(user_id),
-    constraint pendingFriend_fk2 foreign key (toID) references profile(user_id)
+    constraint pendingFriend_fk2 foreign key (toID) references profile(user_id),
+    constraint pendingFriend_ck1 check (fromID != toID)
 );
 
 create table messageInfo
