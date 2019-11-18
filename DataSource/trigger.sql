@@ -5,10 +5,17 @@ set search_path to pitt_social;
 create or replace function saveRecipient() returns trigger as
 $$
 begin
-    insert into messageRecipient values (new.msgID, new.toUserID);
+    if(new.togroupid is not null) then
+        insert into messagerecipient
+            select new.msgid,gm.userid from groupmember gm where gm.gid=new.togroupid;
+    else
+        insert into messageRecipient values (new.msgID, new.toUserID);
+    end if;
     return new;
 end;
 $$ language plpgsql;
+
+
 
 drop trigger if exists autoSave on messageInfo;
 create trigger autoSave
@@ -71,6 +78,22 @@ create trigger validFriends
     FOR EACH ROW
 execute procedure ifNewFriends();
 
+create or replace function removeFromGroup() returns trigger as
+$$
+    begin
+        delete from groupmember where userid=old.user_id;
+        delete from messageinfo mi where (mi.fromid = old.user_id and
+                (select count(*) from profile p where mi.touserid = p.user_id) =0)
+                or (mi.touserid = old.user_id and
+                (select count(*) from profile p where mi.touserid = p.user_id) =0);
+    end;
+$$ language plpgsql;
+
+drop trigger if exists userRemoved on profile;
+create trigger userRemoved
+    after delete on profile
+    for each row
+execute function removeFromGroup();
 
 --Phase 2:
 --createUser
@@ -164,5 +187,16 @@ create or replace function showGroupRequests(thisuserid int) returns table(gid i
 
 
 
+--test save group recipients trigger
+/*
+insert into groupmember values(1,4,'lali');
+insert into groupmember values(1,2,'blu blu');
+insert into messageinfo(fromid, message, touserid, togroupid, timesent)
+values(3,'ewww!',null,1,'2019-05-08 04:25:52');
 
+insert into friend values(1,2,'2019-05-02','dang');
+insert into messageinfo(fromid, message, touserid, togroupid, timesent)
+values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 
+--test UserRemoved trigger
+--delete from profile where user_id=4;

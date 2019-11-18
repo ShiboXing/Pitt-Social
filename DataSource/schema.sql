@@ -50,7 +50,7 @@ create table pendingFriend
 
 create table messageInfo
 (
-    msgID int,
+    msgID serial,
     fromID int,
     message varchar(200),
     toUserID int default NULL,
