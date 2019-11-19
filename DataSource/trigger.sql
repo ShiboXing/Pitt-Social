@@ -420,8 +420,7 @@ $$ language plpgsql;
 
 
 --searchForUser
-/*drop function if exists searchForUser(keyword varchar);
->>>>>>> 7819be16cd482c5d3930ad00bf7c6336dcb48173
+drop function if exists searchForUser(keyword varchar);
 create or replace function searchForUser(keyword varchar) returns table(user_id int,name varchar,email varchar,password varchar,date_of_birth date,lastlogin timestamp) as
 $$
 begin
