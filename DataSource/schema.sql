@@ -33,8 +33,10 @@ create table friend
     JDate date,
     message varchar(200),
     constraint friend_pk primary key (userID1,userID2) not deferrable,
-    constraint profile_fk1 foreign key (userID1) references profile(user_id),
+    constraint profile_fk1 foreign key (userID1) references profile(user_id)
+    on delete cascade,
     constraint profile_fk2 foreign key (userID2) references profile(user_id)
+    on delete cascade
 );
 
 create table pendingFriend
@@ -43,8 +45,11 @@ create table pendingFriend
     toID int,
     message varchar(200),
     constraint pendingFriend_pk primary key (fromID, toID) not deferrable,
-    constraint pendingFriend_fk1 foreign key (fromID) references profile(user_id),
-    constraint pendingFriend_fk2 foreign key (toID) references profile(user_id),
+
+    constraint pendingFriend_fk1 foreign key (fromID) references profile(user_id)
+    on delete cascade,
+    constraint pendingFriend_fk2 foreign key (toID) references profile(user_id)
+    on delete cascade,
     constraint pendingFriend_ck1 check (fromID != toID)
 );
 
@@ -57,8 +62,10 @@ create table messageInfo
     toGroupID int default NULL,
     timeSent timestamp,
     constraint message_pk primary key (msgID) not deferrable,
-    constraint message_fk1 foreign key (fromID) references profile(user_id),
-    constraint message_fk2 foreign key (toUserID) references profile(user_id),
+    constraint message_fk1 foreign key (fromID) references profile(user_id)
+    on delete cascade,
+    constraint message_fk2 foreign key (toUserID) references profile(user_id)
+    on delete cascade,
     constraint validMessage check ((toUserID is null and toGroupID is not null) or (toUserID is not null and toGroupID is null)) --a message should be sent to a user or a group
 );
 
@@ -67,8 +74,10 @@ create table messageRecipient
     msgID int,
     userID int,
     constraint messageRecipient_pk primary key (msgID,userID) not deferrable,
-    constraint messageRecipient_fk1 foreign key (msgID) references messageInfo (msgID),
+    constraint messageRecipient_fk1 foreign key (msgID) references messageInfo (msgID)
+    on delete cascade,
     constraint messageRecipient_fk2 foreign key (userID) references profile(user_id)
+    on delete cascade
 );
 
 create table groupInfo
@@ -87,8 +96,10 @@ create table groupMember
     userId int,
     role varchar(20),
     constraint groupMember_pk primary key (gID,userId) not deferrable,
-    constraint groupMember_fk1 foreign key (gId) references groupInfo(gID),
+    constraint groupMember_fk1 foreign key (gId) references groupInfo(gID)
+    on delete cascade,
     constraint groupMember_fk2 foreign key (userId) references profile(user_id)
+    on delete cascade
 );
 
 create table pendingGroupMember
@@ -97,12 +108,15 @@ create table pendingGroupMember
     userId int,
     message varchar(200),
     constraint pendingGroupMember_pk primary key (gID,userId) not deferrable,
-    constraint pendingGroupMember_fk1 foreign key (gId) references groupInfo(gID),
+    constraint pendingGroupMember_fk1 foreign key (gId) references groupInfo(gID)
+    on delete cascade,
     constraint pendingGroupMember_fk2 foreign key (userId) references profile(user_id)
+    on delete cascade
 );
 
 alter table messageInfo
-    add constraint message_fk3 foreign key (toGroupID) references groupInfo(gID);
+    add constraint message_fk3 foreign key (toGroupID) references groupInfo(gID)
+    on delete cascade;
 
 
 

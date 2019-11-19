@@ -5,11 +5,9 @@ set search_path to pitt_social;
 create or replace function saveRecipient() returns trigger as
 $$
 begin
-    if (new.togroupid is not null) then
+    if(new.togroupid is not null) then
         insert into messagerecipient
-        select new.msgid, gm.userid
-        from groupmember gm
-        where gm.gid = new.togroupid;
+            select new.msgid,gm.userid from groupmember gm where gm.gid=new.togroupid;
     else
         insert into messageRecipient values (new.msgID, new.toUserID);
     end if;
@@ -87,28 +85,34 @@ create trigger validFriends
     FOR EACH ROW
 execute procedure ifNewFriends();
 
-create or replace function removeFromGroup() returns trigger as
+
+create or replace function BeforeUserRemove() returns trigger as
 $$
-begin
-    delete from groupmember gwhere g.userid = old.user_id;
-    delete
-    from messageinfo mi
-    where (mi.fromid = old.user_id and
-           (select count(*) from profile p where mi.touserid = p.user_id) = 0)
-       or (mi.touserid = old.user_id and
-           (select count(*) from profile p where mi.touserid = p.user_id) = 0);
-    return old;
-end;
+    begin
+        if ((select count(*) from profile where user_id=-1)=0) then
+            insert into profile values(-1,'dummy','-@-.---','dummy',null,null);
+        end if;
+
+        --update groupmember set userid = -1 where userid=old.user_id;
+        delete from groupinfo where gid in
+                (select gid from groupmember where userid=old.user_id);
+        update messageinfo set touserid=-1 where touserid=old.user_id and not fromid = -1;
+        update messageinfo set fromid=-1 where fromid=old.user_id and not touserid = -1;
+
+        return old;
+    end;
 $$ language plpgsql;
 
 drop trigger if exists userRemoved on profile;
 create trigger userRemoved
-    after delete
-    on profile
+    before delete on profile
     for each row
-execute function removeFromGroup();
+execute function BeforeUserRemove();
+
+
 
 --Phase 2:
+
 --createUser
 drop procedure if exists createuser(user_name varchar(50), email varchar(50), user_password varchar(50)
     , user_date_of_birth date, user_lastlogin timestamp);
@@ -160,14 +164,15 @@ drop procedure if exists createGroup(thisUserId int, groupName varchar(50), grou
 create or replace procedure createGroup(thisUserId int, groupName varchar(50), groupSize int,
                                         groupDescription varchar(200)) as
 $$
-declare
-    thisGroupId int;
-begin
-    select nextval(pg_get_serial_sequence('groupinfo', 'gid')) into thisGroupId;
-    --raise notice 'Value: %', thisGroupId;
-    insert into groupinfo values (thisGroupId, groupName, groupSize, groupDescription);
-    insert into groupmember(gid, userid, role) values (thisgroupid, thisuserid, 'manager');
-end;
+
+    declare
+        thisGroupId int;
+    begin
+        select nextval(pg_get_serial_sequence('groupinfo','gid')) into thisGroupId;
+        --raise notice 'Value: %', thisGroupId;
+        insert into groupinfo values(thisGroupId,groupName, groupSize, groupDescription);
+        insert into groupmember(gid, userid, role) values (thisgroupid, thisuserid, 'manager');
+    end;
 $$ language plpgsql;
 
 --initiateAddingGroup
@@ -181,38 +186,26 @@ $$ language plpgsql;
 
 --confirmRequests
 drop function if exists showFriendRequests(thisuserid int);
-create or replace function showFriendRequests(thisuserid int)
-    returns table
-            (
-                tid int
-            )
-as
-$$
-begin
-    return query
-        select fromid from pendingfriend where toid = thisuserid;
-end;
-$$ language plpgsql;
+create or replace function showFriendRequests(thisuserid int) returns table (tid int) as
+    $$
+        begin
+             return query
+                 select fromid from pendingfriend where toid=thisuserid;
+        end;
+    $$ language plpgsql;
 
 drop function if exists showGroupRequests(thisuserid int);
-create or replace function showGroupRequests(thisuserid int)
-    returns table
-            (
-                gid int,
-                uid int
-            )
-as
-$$
-begin
-    return query
-        select distinct pgm.gid, userid
-        from pendinggroupmember pgm
-        where pgm.gid in (select distinct gm.gid
-                          from groupmember gm
-                          where userid = thisuserid
-                            and role = 'manager');
-end;
-$$ language plpgsql;
+create or replace function showGroupRequests(thisuserid int) returns table(gid int,uid int) as
+    $$
+        begin
+             return query
+                select distinct pgm.gid,userid from pendinggroupmember pgm
+                    where pgm.gid in (select distinct gm.gid from groupmember gm
+                                    where userid=thisuserid and role='manager');
+        end;
+    $$ language plpgsql;
+
+
 drop procedure if exists removeFromPendingFriends(thisUserId int, fromId int);
 create or replace procedure removeFromPendingFriends(thisUserId int, fromId int) as
 $$
@@ -313,36 +306,9 @@ begin
     return result;
 end;
 $$ language plpgsql;
---populate group message to each user in group, revealed in messageRecipient
--- drop function if exists populateGroupMessage();
--- create or replace function populateGroupMessage() returns trigger as
---     $$
---     declare
---     usersInGroup_cursor cursor for select * from groupmember gm where gm.gid = new.togroupid;
---     usersInGroup_record groupmember%rowtype;
---     begin
---         open usersInGroup_cursor;
---         for usersInGroup_record in usersInGroup_cursor
---         loop
---             fetch usersInGroup_cursor into usersInGroup_record;
---             exit when not found;
---             insert into messagerecipient values (new.msgid, usersInGroup_record.userid);
---             end loop;
---         return new;
---
---     end;
---     $$ language plpgsql;
---
--- drop trigger if exists populateGroupMessage on messageInfo;
--- create trigger populateGroupMessage
---     AFTER
---         INSERT
---     ON messageInfo
---     FOR EACH ROW
--- execute procedure populateGroupMessage();
+
 
 --displayMessages
-
 drop function if exists displayMessages(thisuserid int);
 create or replace function displayMessages(thisuserid int)
     returns table
@@ -449,13 +415,15 @@ end;
 $$ language plpgsql;
 
 --searchForUser
-drop function if exists searchForUser(keyword varchar);
+/*rop function if exists searchForUser(keyword varchar);
 create or replace function searchForUser(keyword varchar) returns table(user_id int,name varchar,email varchar,password varchar,date_of_birth date,lastlogin timestamp) as
 $$
 begin
 return query select * from profile where keyword in name and keyword in email;
 end;
 $$language plpgsql;
+  */
+
 --threeDegrees
 --use returnFriendsList (thisuserid int)
 
@@ -524,7 +492,32 @@ insert into friend values(1,2,'2019-05-02','dang');
 insert into messageinfo(fromid, message, touserid, togroupid, timesent)
 values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 
+
 --test UserRemoved trigger
 --delete from profile where user_id=4;
 
+--test save group recipients trigger
+/*
+insert into groupmember values(1,4,'lali');
+insert into groupmember values(1,2,'blu blu');
+insert into messageinfo(fromid, message, touserid, togroupid, timesent)
+values(3,'ewww!',null,1,'2019-05-08 04:25:52');
+
+insert into friend values(1,2,'2019-05-02','dang');
+insert into messageinfo(fromid, message, touserid, togroupid, timesent)
+values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
+
+--test UserRemoved trigger
+--delete from profile where user_id=4;
+
+
+--test BeforeUserDelete trigger
+/*
+insert into friend values(3,2,'2019-05-02','dang');
+insert into friend values(3,1,'2019-05-02','dang');
+insert into friend values(1,4,'2019-05-02','dang');
+insert into messageinfo(fromid, message, touserid, togroupid, timesent) values (3,'qw',1,null,null);
+insert into messageinfo(fromid, message, touserid, togroupid, timesent) values (3,'qw',2,null,null);
+delete from profile where user_id=3;
+delete from profile where user_id=2;*/
 
