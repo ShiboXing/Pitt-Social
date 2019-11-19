@@ -69,7 +69,8 @@ $$
 declare
     friendNum int;
 begin
-    select count(*) into friendNum from friend f where f.userID1 = new.userID2 and f.userID2 = new.userID1;
+    select count(*) into friendNum from friend f
+    where f.userID1 = new.userID2 and f.userID2 = new.userID1;
     if (friendNum > 0) then
         raise exception 'violate constraint already friends';
     end if;
@@ -385,15 +386,18 @@ $$
 declare
     output boolean;
 begin
-
-    output = checkid in (select id.userid
+    /*output = checkid in (select id.userid
                          from ((select userID1 from friend where UserId2 = thisuserid)
                                union
                                (select userID2 from friend where UserId1 = thisuserid)) as id(userid)
-                                  left outer join profile p on id.userid = p.user_id);
+                                  left outer join profile p on id.userid = p.user_id);*/
+    output = (select count(*) from friend
+        where (userid1=thisuserid and userid2=checkid)
+           or (userid2=thisuserid and userid1=checkid))>0;
     return output;
 end;
 $$ language plpgsql;
+
 drop function if exists showProfile(friendid int);
 create or replace function showProfile(friendid int)
     returns table
@@ -415,7 +419,7 @@ end;
 $$ language plpgsql;
 
 --searchForUser
-/*rop function if exists searchForUser(keyword varchar);
+/*drop function if exists searchForUser(keyword varchar);
 create or replace function searchForUser(keyword varchar) returns table(user_id int,name varchar,email varchar,password varchar,date_of_birth date,lastlogin timestamp) as
 $$
 begin
@@ -427,6 +431,15 @@ $$language plpgsql;
 --threeDegrees
 --use returnFriendsList (thisuserid int)
 
+-- --threeDegrees
+-- create or replace function threeDegrees(start_uid int,end_uid int)
+-- returns table(uid1 int,uid2 int,uid3 int,uid4 int) as
+-- $$
+--     begin
+--         select userid2 from friend where start_uid=userid1;
+--         return null;
+--     end;
+-- $$ language plpgsql;
 
 --topMessages
 drop function if exists topMessagesRecievedFrom(thisuserid int, k int, currentTimeMinusSixMonth timestamp);
@@ -512,10 +525,14 @@ values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 
 
 --test BeforeUserDelete trigger
-
 -- insert into friend values(3,2,'2019-05-02','dang');
 -- insert into friend values(3,1,'2019-05-02','dang');
 -- insert into friend values(1,4,'2019-05-02','dang');
+-- select * from iffriends(3,2);
+-- select * from iffriends(2,3);
+-- select * from iffriends(3,4);
+-- select * from iffriends(4,4);
+
 -- insert into groupmember values(3,3,'lali');
 -- insert into messageinfo(fromid, message, touserid, togroupid, timesent) values (3,'qw',1,null,null);
 -- insert into messageinfo(fromid, message, touserid, togroupid, timesent) values (3,'qw',2,null,null);
