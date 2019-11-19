@@ -95,7 +95,7 @@ $$
 
         --update groupmember set userid = -1 where userid=old.user_id;
         delete from groupinfo where gid in
-                (select gid from groupmember where userid=old.user_id);
+                (select gid from groupmember where userid=old.user_id and role='manager');
         update messageinfo set touserid=-1 where touserid=old.user_id and not fromid = -1;
         update messageinfo set fromid=-1 where fromid=old.user_id and not touserid = -1;
 
@@ -478,7 +478,7 @@ $$
 begin
     update profile set lastlogin = currenttime where user_id = thisuserid;
 end;
-$$
+$$ language plpgsql;
 
 
 --test save group recipients trigger
@@ -512,12 +512,14 @@ values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 
 
 --test BeforeUserDelete trigger
-/*
-insert into friend values(3,2,'2019-05-02','dang');
-insert into friend values(3,1,'2019-05-02','dang');
-insert into friend values(1,4,'2019-05-02','dang');
-insert into messageinfo(fromid, message, touserid, togroupid, timesent) values (3,'qw',1,null,null);
-insert into messageinfo(fromid, message, touserid, togroupid, timesent) values (3,'qw',2,null,null);
-delete from profile where user_id=3;
-delete from profile where user_id=2;*/
+
+-- insert into friend values(3,2,'2019-05-02','dang');
+-- insert into friend values(3,1,'2019-05-02','dang');
+-- insert into friend values(1,4,'2019-05-02','dang');
+-- insert into groupmember values(3,3,'lali');
+-- insert into messageinfo(fromid, message, touserid, togroupid, timesent) values (3,'qw',1,null,null);
+-- insert into messageinfo(fromid, message, touserid, togroupid, timesent) values (3,'qw',2,null,null);
+-- delete from profile where user_id=3;
+-- delete from profile where user_id=2;
+-- delete from profile where user_id=1;
 
