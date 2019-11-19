@@ -12,6 +12,7 @@ public class Driver {
             dataManager.initDatabase();
         } catch (Exception e) {
             e.printStackTrace();
+
         }
         PittSocial PS = new PittSocial("postgres", "team3", "jdbc:postgresql://localhost/postgres");
 

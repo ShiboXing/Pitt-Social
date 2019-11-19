@@ -449,8 +449,16 @@ end;
 $$ language plpgsql;
 
 --searchForUser
-
+drop function if exists searchForUser(keyword varchar);
+create or replace function searchForUser(keyword varchar) returns table(user_id int,name varchar,email varchar,password varchar,date_of_birth date,lastlogin timestamp) as
+$$
+begin
+return query select * from profile where keyword in name and keyword in email;
+end;
+$$language plpgsql;
 --threeDegrees
+--use returnFriendsList (thisuserid int)
+
 
 --topMessages
 drop function if exists topMessagesRecievedFrom(thisuserid int, k int, currentTimeMinusSixMonth timestamp);
