@@ -31,9 +31,5 @@ public class Driver {
         PS.initiateAddingGroup(2,"my id is 1, put me into the lame2 group");
         System.out.println(PS.login("lolo@tt.org","tt"));
         PS.initiateAddingGroup(3,"my id is 4, put me into the not lame group");
-
-
-
     }
-
 }

@@ -78,24 +78,33 @@ create trigger validFriends
     FOR EACH ROW
 execute procedure ifNewFriends();
 
-create or replace function removeFromGroup() returns trigger as
+create or replace function BeforeUserRemove() returns trigger as
 $$
     begin
-        delete from groupmember where userid=old.user_id;
-        delete from messageinfo mi where (mi.fromid = old.user_id and
-                (select count(*) from profile p where mi.touserid = p.user_id) =0)
-                or (mi.touserid = old.user_id and
-                (select count(*) from profile p where mi.touserid = p.user_id) =0);
+        if ((select count(*) from profile where user_id=-1)=0) then
+            insert into profile values(-1,'dummy','-@-.---','dummy',null,null);
+        end if;
+
+        --update groupmember set userid = -1 where userid=old.user_id;
+        delete from groupinfo where gid in
+                (select gid from groupmember where userid=old.user_id);
+        update messageinfo set touserid=-1 where touserid=old.user_id and not fromid = -1;
+        update messageinfo set fromid=-1 where fromid=old.user_id and not touserid = -1;
+
+        return old;
     end;
 $$ language plpgsql;
 
 drop trigger if exists userRemoved on profile;
 create trigger userRemoved
-    after delete on profile
+    before delete on profile
     for each row
-execute function removeFromGroup();
+execute function BeforeUserRemove();
+
+
 
 --Phase 2:
+
 --createUser
 drop procedure if exists createuser(user_name varchar(50), email varchar(50), user_password varchar(50)
 , user_date_of_birth date, user_lastlogin timestamp);
@@ -200,3 +209,15 @@ values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 
 --test UserRemoved trigger
 --delete from profile where user_id=4;
+
+
+--test BeforeUserDelete trigger
+/*
+insert into friend values(3,2,'2019-05-02','dang');
+insert into friend values(3,1,'2019-05-02','dang');
+insert into friend values(1,4,'2019-05-02','dang');
+insert into messageinfo(fromid, message, touserid, togroupid, timesent) values (3,'qw',1,null,null);
+insert into messageinfo(fromid, message, touserid, togroupid, timesent) values (3,'qw',2,null,null);
+delete from profile where user_id=3;
+delete from profile where user_id=2;*/
+
