@@ -16,6 +16,9 @@ public class Driver {
         PS.createUser("didi","3dd@dd.org","dd","1900-09-10");
         PS.createUser("dodo","dodo@tt.org","dd","2017-09-10");
         PS.createUser("lolo","lolo@tt.org","tt","2017-09-10");
+        PS.createUser("aoao","aoao@tt.org","aa","2017-09-10");
+        PS.createUser("yoyo","yoyo@tt.org","aa","2017-09-10");
+        PS.createUser("jojo","jojo@tt.org","aa","2017-09-10");
         System.out.println(PS.login("3dd@dd.org","dd"));
 
         PS.initiateFriendship(3,"waddup");

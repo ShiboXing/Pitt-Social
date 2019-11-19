@@ -363,20 +363,23 @@ $$ language plpgsql;
 --displayFriends
 drop function if exists returnFriendsList(thisuserid int);
 create or replace function returnFriendsList(thisuserid int)
-    returns table
-            (
-                friendID   int,
-                friendName varchar(50)
-            )
-as
+    returns table ( friendName varchar(50),friendID   int) as
 $$
 begin
     return query
-        select id.userid, p.name
-        from ((select userID1 from friend where UserId2 = thisuserid)
-              union
-              (select userID2 from friend where UserId1 = thisuserid)) as id(userid)
-                 left outer join profile p on id.userid = p.user_id;
+        select name,p.user_id from (
+            (select user_id from profile where iffriends(thisuserid,user_id)) fids
+            join profile p on fids.user_id=p.user_id);
+end;
+$$ language plpgsql;
+
+drop function if exists returnFriendIDsList(thisuserid int);
+create or replace function returnFriendIDsList(thisuserid int)
+    returns table (friendID int) as
+$$
+begin
+    return query
+        select user_id from profile where iffriends(thisuserid,user_id);
 end;
 $$ language plpgsql;
 
@@ -386,11 +389,6 @@ $$
 declare
     output boolean;
 begin
-    /*output = checkid in (select id.userid
-                         from ((select userID1 from friend where UserId2 = thisuserid)
-                               union
-                               (select userID2 from friend where UserId1 = thisuserid)) as id(userid)
-                                  left outer join profile p on id.userid = p.user_id);*/
     output = (select count(*) from friend
         where (userid1=thisuserid and userid2=checkid)
            or (userid2=thisuserid and userid1=checkid))>0;
@@ -431,15 +429,51 @@ $$language plpgsql;
 --threeDegrees
 --use returnFriendsList (thisuserid int)
 
--- --threeDegrees
--- create or replace function threeDegrees(start_uid int,end_uid int)
--- returns table(uid1 int,uid2 int,uid3 int,uid4 int) as
--- $$
---     begin
---         select userid2 from friend where start_uid=userid1;
---         return null;
---     end;
--- $$ language plpgsql;
+--threeDegrees
+
+create or replace function ThreeDegree(start_uid int,end_uid int)
+    returns varchar as
+$$
+    begin
+        if (end_uid in (select friendID from returnFriendIDsList(start_uid))) then
+            return start_uid || '->' || end_uid;
+
+        elseif(end_uid in (select distinct fid2 from
+                      (select friendID fid1 from returnFriendIDsList(start_uid)) hop1,
+                      (select returnFriendIDsList(user_id) fid2,user_id from profile) hop2
+                      where fid1 = hop2.user_id)) then
+            return start_uid || '->' || (select fid1 from (select friendID fid1 from returnFriendsList(start_uid)) hop1,
+                      (select returnFriendIDsList(user_id) fid2,user_id from profile) hop2
+                      where fid1 = hop2.user_id and fid2=end_uid limit 1)
+                  || '->' ||end_uid;
+        elseif(end_uid in (select distinct fid3 from
+                    (select distinct fid2 from
+                      (select friendID fid1 from returnFriendIDsList(start_uid)) hop1,
+                      (select returnFriendIDsList(user_id) fid2,user_id from profile) hop2
+                      where fid1 = hop2.user_id) hop2_ids,
+                    (select returnfriendidslist(user_id) fid3,user_id from profile) hop3
+                    where hop2_ids.fid2=hop3.user_id)) then
+                return start_uid || '->' || (select distinct fid1 from
+                    (select distinct fid2,fid1 from
+                      (select friendID fid1 from returnFriendIDsList(start_uid)) hop1,
+                      (select returnFriendIDsList(user_id) fid2,user_id from profile) hop2
+                      where fid1 = hop2.user_id) hop2_ids,
+                    (select returnfriendidslist(user_id) fid3,user_id from profile) hop3
+                    where hop2_ids.fid2=hop3.user_id and fid3=end_uid limit 1) || '->' ||
+                    (select distinct fid2 from
+                        (select distinct fid2 from
+                          (select friendID fid1 from returnFriendIDsList(start_uid)) hop1,
+                          (select returnFriendIDsList(user_id) fid2,user_id from profile) hop2
+                          where fid1 = hop2.user_id) hop2_ids,
+                        (select returnfriendidslist(user_id) fid3,user_id from profile) hop3
+                    where hop2_ids.fid2=hop3.user_id and fid3=end_uid limit 1) || '->' ||
+                    end_uid;
+        end if;
+        return '-1';
+    end;
+$$ language plpgsql;
+
+
 
 
 --topMessages
@@ -541,3 +575,25 @@ values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 -- delete from profile where user_id=2;
 -- delete from profile where user_id=1;
 
+
+-- --test returnFriendsList
+-- insert into friend values(3,2,'2019-05-02','dang');
+-- insert into friend values(3,1,'2019-05-02','dang');
+-- insert into friend values(1,4,'2019-05-02','dang');
+-- select * from returnFriendsList(3);
+-- select * from returnFriendsList(1);
+-- select * from returnFriendsList(4);
+
+-- --test threeDegree
+-- insert into friend values(3,2,'2019-05-02','dang');
+-- insert into friend values(3,1,'2019-05-02','dang');
+-- insert into friend values(4,2,'2019-05-02','dang');
+-- insert into friend values(1,4,'2019-05-02','dang');
+-- insert into friend values(1,5,'2019-05-02','dang');
+-- insert into friend values(4,5,'2019-05-02','dang');
+-- insert into friend values(6,5,'2019-05-02','dang');
+-- select * from ThreeDegree(2,2);
+--
+-- select fid1 from (select friendID fid1 from returnFriendsList(3)) hop1,
+--                       (select returnFriendIDsList(user_id) fid2,user_id from profile) hop2
+--                       where fid1 = hop2.user_id and fid2=4;
