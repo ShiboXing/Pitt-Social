@@ -414,18 +414,18 @@ begin
 end;
 $$ language plpgsql;
 
---searchForUser
-/*rop function if exists searchForUser(keyword varchar);
+--searchForUser (keyword should be extract from user input, example: 'ab' -> keyword = '%ab%'
+drop function if exists searchForUser(keyword varchar);
 create or replace function searchForUser(keyword varchar) returns table(user_id int,name varchar,email varchar,password varchar,date_of_birth date,lastlogin timestamp) as
 $$
 begin
-return query select * from profile where keyword in name and keyword in email;
+return query select * from profile where name like keyword or email like keyword;
 end;
 $$language plpgsql;
-  */
 
 --threeDegrees
 --use returnFriendsList (thisuserid int)
+
 
 
 --topMessages

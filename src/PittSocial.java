@@ -95,5 +95,19 @@ public class PittSocial {
         return new ArrayList();
     }
 
+    public List showGroupRequests() throws SQLException {
+        PreparedStatement st=_conn.prepareStatement("select * from showGrouprequests(?);");
+        st.setInt(1,currentUserId);
+        ResultSet rs=st.executeQuery();
+        String col1=rs.getMetaData().getColumnName(1);
+        System.out.println("col1: "+col1);
+        while(rs.next())
+        {
+
+        }
+        return new ArrayList();
+    }
+
+
 
 }
