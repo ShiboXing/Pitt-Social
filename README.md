@@ -19,9 +19,8 @@ Implemented Java methods and classes to accomplish user's operations
 ###### prerequisites: 
 ###### have Java 8 or higher installed on your local machine, a postgresql database installed on localhost
 
-First change the credentials in 
-#### `src/DataManager.java` 
-in accordance with your postgresql database
+First change the credentials 
+<h4> `src/DataManager.java`</h4> in accordance with your postgresql database\
 in the root directory of the repository, you can run:
 #### `javac -cp Libraries/*.jar src/*.java`
 
