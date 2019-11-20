@@ -126,19 +126,35 @@ public class PittSocial {
         return 0;
     }
 
-    public int sendMessageToUser(int toID, String msg) throws SQLException {
-        CallableStatement st=_conn.prepareCall("call createMessage(?,?,?,?);");
+    public boolean sendMessageToUser(int toID, String msg) throws SQLException {
+
+        PreparedStatement st=_conn.prepareStatement("select * from createMessage(?,?,?,?);");
         st.setInt(1,currentUserId);
         st.setInt(2,toID);
         st.setString(3,msg);
         st.setBoolean(4,false);
-        st.execute();
+        ResultSet rs=st.executeQuery();
         System.out.println(st);
-        return 0;
+        rs.next();
+        return rs.getBoolean(1);
+
     }
 
-    public int sendMessageToGroup(int toGID,String msg)
+    public boolean sendMessageToGroup(int toGID,String msg) throws SQLException {
+        PreparedStatement st=_conn.prepareStatement("select * from createMessage(?,?,?,?);");
+        st.setInt(1,currentUserId);
+        st.setInt(2,toGID);
+        st.setString(3,msg);
+        st.setBoolean(4,true);
+        ResultSet rs=st.executeQuery();
+        System.out.println(st);
+        rs.next();
+        return rs.getBoolean(1);
+    }
+
+    public int displayMessages()
     {
+
         return 0;
     }
 }

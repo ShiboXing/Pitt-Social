@@ -225,7 +225,7 @@ begin
 end;
 $$ language plpgsql;
 
---sendMessageToUser
+--sendMessageToUser/Group
 drop function if exists showUserName(userId int);
 create or replace function showUserName(userId int) returns varchar as
 $$
@@ -237,45 +237,43 @@ begin
 end;
 $$ language plpgsql;
 
-drop procedure if exists createMessage(thisUserId int, toID int, content varchar, isToGroup boolean);
-create or replace procedure createMessage(thisUserId int, toID int, content varchar, isToGroup boolean) as
+drop function if exists createMessage(thisUserId int, toID int, content varchar, isToGroup boolean);
+create or replace function createMessage(thisUserId int, toID int, content varchar, isToGroup boolean)
+returns boolean as
 $$
+declare
+    ts timestamp;
 begin
+    ts=now();
     if (isToGroup) then
         insert into messageInfo(fromId, message, toUserId, toGroupId, timesent)
-        values (thisuserid, content, null, toID, now());
+        values (thisuserid, content, null, toID, ts);
     else
         insert into messageInfo(fromId, message, toUserId, toGroupId, timesent)
-        values (thisuserid, content, toID, null, now());
+        values (thisuserid, content, toID, null, ts);
     end if;
+    return ifSendMessageSuccessfully(thisUserId,toId,ts,isToGroup);
 end;
 $$ language plpgsql;
 
-drop function if exists ifSendFriendSuccessfully (thisUserId int, recipient int, content varchar, sendTime timestamp);
-create or replace function ifSendFriendSuccessfully(thisUserId int, recipient int, content varchar, sendTime timestamp) returns boolean as
+drop function if exists ifSendMessageSuccessfully (thisUserId int, recipient int, sendTime timestamp, isGroup boolean);
+create or replace function ifSendMessageSuccessfully(thisUserId int, recipient int, sendTime timestamp, isGroup boolean)
+    returns boolean as
 $$
 declare
-    result boolean;
+    msg_id int;
 begin
-    result = exists(select msgid
-                    from messageinfo
-                    where fromid = thisuserid
-                      and message = content
-                      and touserid = recipient
-                      and timesent = sendTime);
-    return result;
-end;
-$$ language plpgsql;
-
---sendMessageToGroup
-drop function if exists ifInGroup (thisUserId int, gid int);
-create or replace function ifInGroup(thisUserId int, gid int) returns boolean as
-$$
-declare
-    result boolean;
-begin
-    result = exists(select gm.gid, gm.userid from groupmember gm where gm.userid = thisuserid and gm.gid = gid);
-    return result;
+    msg_id=-1;
+    if (not isGroup) then
+        select msgid into msg_id from messageinfo where fromid = thisuserid
+                          and touserid = recipient and timesent = sendTime;
+        return exists(select * from messagerecipient where msgid=msg_id and userid=recipient);
+    else
+        select msgid into msg_id from messageinfo where fromid = thisuserid
+                          and togroupid = recipient and timesent = sendTime;
+        return (select count(*) from (select userid from groupmember where gid=recipient except
+                select userid from messagerecipient where msgid=msg_id) empty) = 0;
+    end if;
 end;
 $$ language plpgsql;
 
@@ -290,31 +288,6 @@ begin
 end;
 $$ language plpgsql;
 
-drop procedure if exists createMessage(thisUserId int, recipientgroup int, content varchar, sendtime timestamp);
-create or replace procedure createMessage(thisUserId int, recipientgroup int, content varchar, sendtime timestamp) as
-$$
-begin
-    insert into messageInfo(fromId, message, toUserId, toGroupId, timesent)
-    values (thisuserid, content, null, recipientgroup, sendtime);
-end;
-$$ language plpgsql;
-
-drop function if exists ifSendGroupSuccessfully (thisUserId int, recipientgroup int, content varchar, sendTime timestamp);
-create or replace function ifSendGroupSuccessfully(thisUserId int, recipientgroup int, content varchar,
-                                                   sendTime timestamp) returns boolean as
-$$
-declare
-    result boolean;
-begin
-    result = exists(select msgid
-                    from messageinfo
-                    where fromid = thisuserid
-                      and message = content
-                      and togroupid = recipientgroup
-                      and timesent = sendTime);
-    return result;
-end;
-$$ language plpgsql;
 
 
 --displayMessages

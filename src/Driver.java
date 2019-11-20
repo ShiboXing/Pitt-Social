@@ -38,13 +38,17 @@ public class Driver {
         PS.createGroup("not lame",3,"group 3 description");
 
         //test initiateGroup
-        PS.initiateAddingGroup(1,"my id is 1, put me into group 2");
+        PS.initiateAddingGroup(1,"my id is 1, put me into group 1");
         PS.initiateAddingGroup(2,"my id is 1, put me into group 2");
         System.out.println(PS.login("5@5.org","555"));
         PS.initiateAddingGroup(3,"my id is 5, put me into group 3");
         System.out.println(PS.login("4@4.org","444"));
         PS.initiateAddingGroup(1,"my id is 4, put me into group 1");
         PS.initiateAddingGroup(2,"my id is 4, put me into group 2");
+        System.out.println(PS.login("6@6.org","666"));
+        PS.initiateAddingGroup(2,"my id is 6, put me into group 2");
+        System.out.println(PS.login("7@7.org","777"));
+        PS.initiateAddingGroup(2,"my id is 7, put me into group 2");
 
         // test showFriendsRequests
         System.err.println(PS.showFriendRequests());
@@ -67,18 +71,30 @@ public class Driver {
 
         System.out.println(PS.login("3@3.org","333"));
         PS.resolveGroupRequest(1,4,false);
+        PS.resolveGroupRequest(2,4,true);
+        PS.resolveGroupRequest(2,7,true);
+        PS.resolveGroupRequest(2,6,true);
         System.out.println(PS.login("1@1.org","111"));
         PS.resolveGroupRequest(3,5,true);
 
         //test sendMessageToUser
         System.out.println(PS.login("5@5.org","555"));
-        PS.sendMessageToUser(2,"5 saying hi to 2");
+        System.err.println(PS.sendMessageToUser(2,"5 saying hi to 2"));
         System.out.println(PS.login("2@2.org","222"));
-        PS.sendMessageToUser(5,"2 saying hi to 5");
+        System.err.println(PS.sendMessageToUser(5,"2 saying hi to 5"));
         System.out.println(PS.login("1@1.org","111"));
-        PS.sendMessageToUser(3,"1 saying hi to 3");
+        System.err.println(PS.sendMessageToUser(3,"1 saying hi to 3"));
 
+        //test sendMessageToGroup
+        System.out.println(PS.login("5@5.org","555"));
+        System.err.println(PS.sendMessageToGroup(3,"5 saying hi to group 3"));
+        System.out.println(PS.login("1@1.org","111"));
+        System.err.println(PS.sendMessageToGroup(3,"1 saying hi to group 3"));
+        System.out.println(PS.login("6@6.org","666"));
+        System.err.println(PS.sendMessageToGroup(2,"6 saying hi to group 2"));
 
+        //test display messages
+        
 
 
     }
