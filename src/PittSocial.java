@@ -189,12 +189,83 @@ public class PittSocial {
         String head=String.format(format,"Sender","Content","Time Sent")+'\n';
         String head2="";
         for (int i=0;i<firstWidth+secondWidth+thirdWidth+6;i++) head2+='-';
-        head2=head2+'\n';
+        head2+='\n';
 
         res+=head;
         res+=head2;
         while(rs.next())
             res+=String.format(format,rs.getString(1), rs.getString(2),rs.getTimestamp(3))+'\n';
+        return res;
+    }
+
+    public String displayFriends() throws SQLException {
+        String res="";
+        PreparedStatement st=_conn.prepareStatement("select * from returnFriendsList(?);");
+        st.setInt(1,currentUserId);
+        ResultSet rs=st.executeQuery();
+        System.out.println(st);
+        int firstWidth=20;
+        int secondWidth=10;
+        String format="%1$"+firstWidth+"s | %2$"+secondWidth+"s";
+        String head=String.format(format,"Name","User ID")+'\n';
+        String head2="";
+        for (int i=0;i<firstWidth+secondWidth+6;i++) head2+='-';
+        head2+='\n';
+        res+=head;
+        res+=head2;
+        while(rs.next())
+            res+=String.format(format,rs.getString(1),rs.getInt(2))+'\n';
+        return res;
+
+    }
+
+    public String displayProfile(int userID) throws SQLException {
+        String res="";
+        PreparedStatement st=_conn.prepareStatement("select * from showProfile(?);");
+        st.setInt(1,userID);
+        ResultSet rs=st.executeQuery();
+
+        System.out.println(st);
+
+        int secondWidth=44; //must be divisible by 4
+        int firstWidth=secondWidth/2; //must be even
+        String format="| %1$"+firstWidth+"s | %2$"+secondWidth+"s |";
+        String TitleFormat="| %1$"+(firstWidth+secondWidth)+"s |";
+
+        String headTop="|";
+        String headMid="|";
+        String TitlePadding="";
+        String Title="FRIEND PROFILE";
+        for (int i=0;i<firstWidth+secondWidth+5;i++) {
+            if (i==firstWidth+2) {
+                headMid += '|';
+                headTop+='-';
+            }
+            else{
+                headMid+= '-';
+                headTop+='-';
+            }
+            if(i<(firstWidth+secondWidth+5-Title.length())/2-1)
+                TitlePadding+=' ';
+        }
+        headMid+="|\n";
+        headTop+="|\n";
+
+        rs.next();
+        res+=headTop;
+        res+=String.format(TitleFormat.replace((firstWidth+secondWidth)+"",(firstWidth+secondWidth+3)+""),"")+'\n';
+        res+=String.format(TitleFormat,TitlePadding+Title+TitlePadding+' ')+'\n';
+        res+=String.format(TitleFormat.replace((firstWidth+secondWidth)+"",(firstWidth+secondWidth+3)+""),"")+'\n';
+        res+=headMid;
+        res+=String.format(format,"Name",rs.getString(2))+'\n';
+        res+=headMid;
+        res+=String.format(format,"User ID",rs.getInt(1))+'\n';
+        res+=headMid;
+        res+=String.format(format,"Email",rs.getString(3))+'\n';
+        res+=headMid;
+        res+=String.format(format,"Date of Birth",rs.getString(4))+'\n';
+        res+=headMid;
+
         return res;
     }
 

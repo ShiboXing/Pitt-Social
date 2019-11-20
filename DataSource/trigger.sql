@@ -369,7 +369,6 @@ begin
 end;
 $$ language plpgsql;
 
-drop function if exists showProfile(friendid int);
 create or replace function showProfile(friendid int)
     returns table
             (
@@ -377,15 +376,14 @@ create or replace function showProfile(friendid int)
                 name          varchar(50),
                 email         varchar(50),
                 date_of_birth date
-
             )
 as
 $$
 begin
     return query
-        select user_id, name, email, date_of_birth
-        from profile
-        where user_id = friendid;
+        select p.user_id, p.name, p.email, p.date_of_birth
+        from profile p
+        where p.user_id = friendid;
 end;
 $$ language plpgsql;
 

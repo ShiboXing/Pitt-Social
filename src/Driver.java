@@ -13,7 +13,7 @@ public class Driver {
 
         //test createuser
         PS.createUser("didi","1@1.org","111","1900-09-10");
-        PS.createUser("didi","2@2.org","222","1900-09-10");
+        PS.createUser("hoho","2@2.org","222","1900-09-10");
         PS.createUser("dodo","3@3.org","333","2017-09-10");
         PS.createUser("lolo","4@4.org","444","2017-09-10");
         PS.createUser("aoao","5@5.org","555","2017-09-10");
@@ -145,6 +145,19 @@ public class Driver {
         System.out.println(PS.login("2@2.org","222"));
         System.err.println(PS.displayNewMessages());
         System.err.println(PS.displayMessages());
+
+        //test displayFriends
+        System.err.println(PS.displayFriends());
+        System.out.println(PS.logout());
+        System.out.println(PS.login("3@3.org","333"));
+        System.err.println(PS.displayFriends());
+
+        //test display profile
+        System.err.println(PS.displayProfile(1));
+        System.out.println(PS.logout());
+        System.out.println(PS.login("2@2.org","222"));
+        System.err.println(PS.displayProfile(7));
+
 
 
     }
