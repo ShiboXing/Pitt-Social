@@ -21,7 +21,8 @@ Implemented Java methods and classes to accomplish user's operations
 
 First change the credentials in
 <h4> <code>src/DataManager.java</code> </h4> in accordance with your postgresql database <br>
-In the root directory of the repository, you can run:
+
+In the root directory of the repository, you can run:<br>
 #### `javac -d src -cp Libraries/*.jar src/*.java`
 
 after compiling, you can run:
