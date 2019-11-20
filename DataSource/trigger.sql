@@ -205,25 +205,28 @@ create or replace function showGroupRequests(thisuserid int) returns table(gid i
     $$ language plpgsql;
 
 
-drop procedure if exists confirmFriend(thisUserId int, fromId int);
-create or replace procedure confirmFriend(thisUserId int, fromId int) as
+drop procedure if exists resolveFriendRequest(thisUserId int, fromId int, isConfirm boolean);
+create or replace procedure resolveFriendRequest(thisUserId int, fromId int, isConfirm boolean) as
 $$
 begin
-    insert into friend values(thisUserId,fromId, current_date,
-        (select message from pendingFriend pf where pf.fromid=confirmFriend.fromId and pf.toid=thisUserId));
-    delete from pendingfriend p where p.fromId = confirmFriend.fromId and p.toID = thisUserId;
+    if (isConfirm) then
+        insert into friend values(thisUserId,fromId, current_date,
+            (select message from pendingFriend pf where pf.fromid=resolveFriendRequest.fromId and pf.toid=thisUserId));
+    end if;
+    delete from pendingfriend p where p.fromId = resolveFriendRequest.fromId and p.toID = thisUserId;
 end;
 $$ language plpgsql;
-drop procedure if exists confirmGroupMember(thisUserId int,grouupId int, fromId int);
-create or replace procedure confirmGroupMember(thisUserId int,groupId int, fromId int) as
+drop procedure if exists resolveGroupMemberRequest(thisUserId int,grouupId int, fromId int, isConfirm boolean);
+create or replace procedure resolveGroupMemberRequest(thisUserId int,groupId int, fromId int,isConfirm boolean) as
 $$
 begin
     if ((select count(userid) from groupmember gm
         where userid=thisUserId and role='manager' and gm.gid=groupId)=0) then
         raise exception 'user does not have manager clearance';
     end if;
-
-    insert into groupmember values(groupId,fromId,'non-manager');
+    if (isConfirm) then
+        insert into groupmember values(groupId,fromId,'non-manager');
+    end if;
     delete from pendinggroupmember p where p.gid = groupId and p.userid = fromId;
 end;
 $$ language plpgsql;

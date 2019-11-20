@@ -56,12 +56,17 @@ public class Driver {
         System.err.println(PS.showGroupRequests());
 
         //test confirm friend and group requests
-        PS.confirmFriendRequest(2);
-        PS.confirmFriendRequest(3);
+        PS.resolveFriendRequest(2,false);
+        PS.resolveFriendRequest(3,true);
         System.out.println(PS.login("3@3.org","333"));
-        PS.confirmGroupRequest(1,4);
+        PS.resolveGroupRequest(1,4,false);
         System.out.println(PS.login("1@1.org","111"));
-        PS.confirmGroupRequest(3,5);
+        PS.resolveGroupRequest(3,5,true);
+
+        
+
+
+
 
     }
 }
