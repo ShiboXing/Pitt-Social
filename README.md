@@ -7,8 +7,14 @@ Fangzheng Guo,
 Shibo Xing
 
 ### Phase 1
-instantiated schema and all relations with contraints <br>
-defined triggers on tables <br>
-generated sample data <br>
+instantiated schema and all relations with contraints\
+defined triggers on tables\
+generated sample data 
+
+### Phase 2
+Implemented SQL procedures and functions to support the JDBC methods\
+Improved SQL relation schemas for better performance and modularity\
+Implemented Java methods and classes to accomplish user's operations
+
 
 
