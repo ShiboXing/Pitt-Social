@@ -1,7 +1,6 @@
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.sql.Date;
+import java.util.*;
 import java.sql.*;
 
 public class PittSocial {
@@ -151,9 +150,28 @@ public class PittSocial {
         return rs.getBoolean(1);
     }
 
-    public int displayMessages()
-    {
-        //PreparedStatement st=_conn.prepareStatement("select * from displ");
-        return 0;
+    public String displayMessages() throws SQLException {
+        PreparedStatement st=_conn.prepareStatement("select * from displayMessages(?)");
+        st.setInt(1,currentUserId);
+        ResultSet rs=st.executeQuery();
+        System.out.println(st);
+        String res="";
+        int firstWidth=10;
+        int secondWidth=50;
+        int thirdWidth=30;
+
+        String format="%1$"+firstWidth+"s | %2$"+secondWidth+"s | %3$"+thirdWidth+"s";
+        String head=String.format(format,"Sender","Content","Time Sent")+'\n';
+        String head2="";
+        for (int i=0;i<firstWidth+secondWidth+thirdWidth+6;i++) head2+='-';
+        head2=head2+'\n';
+
+        res+=head;
+        res+=head2;
+        while(rs.next())
+            res+=String.format(format,rs.getInt(2), rs.getString(3),rs.getTimestamp(6))+'\n';
+
+
+        return res;
     }
 }

@@ -307,8 +307,8 @@ $$
 begin
     return query
         select distinct *
-        from MessageInfo
-        where msgid in (
+        from MessageInfo mi
+        where mi.msgid in (
             select mr.msgID
             from messagerecipient mr
             where mr.userid = thisuserid);
@@ -332,8 +332,8 @@ $$
 begin
     return query
         select *
-        from MessageInfo
-        where msgid in (
+        from MessageInfo mi
+        where mi.msgid in (
             select mr.msgID
             from messagerecipient mr
             where mr.userid = thisuserid)
