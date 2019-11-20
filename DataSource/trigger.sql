@@ -34,13 +34,7 @@ declare
     groupNum   integer;
 begin
     if (new.toGroupID is NULL) then
-        select count(*)
-        into friendsNum
-        from (select f.userID1, f.userID2
-              from friend as f
-              where (f.userID1 = new.fromID and f.userID2 = new.toUserID)
-                 or (f.userID2 = new.fromID and f.userID1 = new.toUserID)) as t;
-        if (friendsNum > 0) then
+        if (iffriends(new.fromid,new.touserid)) then
             return new;
         else
             raise exception 'violate constraint areFriends';
@@ -243,12 +237,17 @@ begin
 end;
 $$ language plpgsql;
 
-drop procedure if exists createMessage(thisUserId int, recipient int, content varchar, sendtime timestamp);
-create or replace procedure createMessage(thisUserId int, recipient int, content varchar, sendtime timestamp) as
+drop procedure if exists createMessage(thisUserId int, toID int, content varchar, isToGroup boolean);
+create or replace procedure createMessage(thisUserId int, toID int, content varchar, isToGroup boolean) as
 $$
 begin
-    insert into messageInfo(fromId, message, toUserId, toGroupId, timesent)
-    values (thisuserid, content, recipient, null, sendtime);
+    if (isToGroup) then
+        insert into messageInfo(fromId, message, toUserId, toGroupId, timesent)
+        values (thisuserid, content, null, toID, now());
+    else
+        insert into messageInfo(fromId, message, toUserId, toGroupId, timesent)
+        values (thisuserid, content, toID, null, now());
+    end if;
 end;
 $$ language plpgsql;
 

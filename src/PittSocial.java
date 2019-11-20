@@ -126,4 +126,19 @@ public class PittSocial {
         return 0;
     }
 
+    public int sendMessageToUser(int toID, String msg) throws SQLException {
+        CallableStatement st=_conn.prepareCall("call createMessage(?,?,?,?);");
+        st.setInt(1,currentUserId);
+        st.setInt(2,toID);
+        st.setString(3,msg);
+        st.setBoolean(4,false);
+        st.execute();
+        System.out.println(st);
+        return 0;
+    }
+
+    public int sendMessageToGroup(int toGID,String msg)
+    {
+        return 0;
+    }
 }

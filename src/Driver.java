@@ -26,8 +26,10 @@ public class Driver {
         System.out.println(PS.login("2@2.org","222"));
         PS.initiateFriendship(3,"i'm NO. 2, add me NO. 3");
         PS.initiateFriendship(1,"i'm NO. 2, add me NO. 1");
+        PS.initiateFriendship(5,"i'm NO. 2, add me NO. 5");
         System.out.println(PS.login("3@3.org","333"));
         PS.initiateFriendship(1,"i'm NO. 3, add me NO. 1");
+        PS.initiateFriendship(2,"i'm NO. 3, add me NO. 2");
 
         //test create group
         PS.createGroup("lame",3,"group 1 description");
@@ -58,12 +60,23 @@ public class Driver {
         //test confirm friend and group requests
         PS.resolveFriendRequest(2,false);
         PS.resolveFriendRequest(3,true);
+        System.out.println(PS.login("5@5.org","555"));
+        PS.resolveFriendRequest(2,true);
+        System.out.println(PS.login("2@2.org","222"));
+        PS.resolveFriendRequest(3,true);
+
         System.out.println(PS.login("3@3.org","333"));
         PS.resolveGroupRequest(1,4,false);
         System.out.println(PS.login("1@1.org","111"));
         PS.resolveGroupRequest(3,5,true);
 
-        
+        //test sendMessageToUser
+        System.out.println(PS.login("5@5.org","555"));
+        PS.sendMessageToUser(2,"5 saying hi to 2");
+        System.out.println(PS.login("2@2.org","222"));
+        PS.sendMessageToUser(5,"2 saying hi to 5");
+        System.out.println(PS.login("1@1.org","111"));
+        PS.sendMessageToUser(3,"1 saying hi to 3");
 
 
 

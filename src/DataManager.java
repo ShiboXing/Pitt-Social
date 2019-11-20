@@ -43,4 +43,6 @@ public class DataManager {
         System.out.println("queries: " + lines.toString());
         statement.execute(lines.toString());
     }
+
+
 }
