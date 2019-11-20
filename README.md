@@ -1,4 +1,4 @@
-# Pitt_Social  <br> 
+# Pitt-Social  <br> 
 
 ###### A social networking system for University of Pittsburgh built by PostgresSQL and operated by an application written in Java with JDBC  <br>
 ### project owners:  <br>
