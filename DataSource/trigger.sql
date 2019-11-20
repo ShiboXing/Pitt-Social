@@ -143,13 +143,13 @@ end;
 $$ language plpgsql;
 
 --login
-drop function if exists login(inputEmail varchar(50), inputPassword varchar(50));
 create or replace function login(inputEmail varchar(50), inputPassword varchar(50)) returns int as
 $$
 declare
-    thisUserid varchar;
+    thisUserid int;
 begin
     select user_id into thisUserid from profile p where p.email = inputEmail and p.password = inputPassword;
+    update profile set lastlogin=now() where user_id=thisUserid;
     return thisUserid;
 end;
 $$ language plpgsql;
@@ -306,7 +306,7 @@ as
 $$
 begin
     return query
-        select *
+        select distinct *
         from MessageInfo
         where msgid in (
             select mr.msgID

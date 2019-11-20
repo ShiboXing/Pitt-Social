@@ -65,7 +65,6 @@ public class PittSocial {
         st.execute();
 
         System.out.println(st);
-
         return 0;
     }
 
@@ -154,7 +153,7 @@ public class PittSocial {
 
     public int displayMessages()
     {
-
+        //PreparedStatement st=_conn.prepareStatement("select * from displ");
         return 0;
     }
 }
