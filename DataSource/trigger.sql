@@ -186,38 +186,39 @@ end;
 $$ language plpgsql;
 
 --confirmRequests
-drop function if exists showFriendRequests(thisuserid int);
-create or replace function showFriendRequests(thisuserid int) returns table (tid int) as
+create or replace function showFriendRequests(thisuserid int) returns table (tid int, msg varchar) as
     $$
         begin
              return query
-                 select fromid from pendingfriend where toid=thisuserid;
+                 select fromid, message from pendingfriend where toid=thisuserid;
         end;
     $$ language plpgsql;
 
-drop function if exists showGroupRequests(thisuserid int);
-create or replace function showGroupRequests(thisuserid int) returns table(gid int,uid int) as
+create or replace function showGroupRequests(thisuserid int) returns table(gid int,uid int,msg varchar) as
     $$
         begin
              return query
-                select distinct pgm.gid,userid from pendinggroupmember pgm
+                select distinct pgm.gid,userid,message from pendinggroupmember pgm
                     where pgm.gid in (select distinct gm.gid from groupmember gm
                                     where userid=thisuserid and role='manager');
         end;
     $$ language plpgsql;
 
 
-drop procedure if exists removeFromPendingFriends(thisUserId int, fromId int);
-create or replace procedure removeFromPendingFriends(thisUserId int, fromId int) as
+drop procedure if exists confirmFriend(thisUserId int, fromId int);
+create or replace procedure confirmFriend(thisUserId int, fromId int) as
 $$
 begin
+    insert into friend values(thisUserId,fromId, current_date,
+        (select message from pendingFriend pf where pf.fromid=fromId and pf.toid=thisUserId));
     delete from pendingfriend p where p.fromId = fromId and p.toID = thisUserId;
 end;
 $$ language plpgsql;
-drop procedure if exists removeFromPendingGroupMembers(gid int, fromId int);
-create or replace procedure removeFromPendingGroupMembers(gid int, fromId int) as
+drop procedure if exists confirmGroupMember(gid int, fromId int);
+create or replace procedure confirmGroupMember(gid int, fromId int) as
 $$
 begin
+    insert into groupmember values(gid,fromId,'non-manager');
     delete from pendinggroupmember p where p.gid = gid and p.userid = fromid;
 end;
 $$ language plpgsql;
@@ -426,11 +427,9 @@ return query select * from profile where name like keyword or email like keyword
 end;
 $$language plpgsql;
 
---threeDegrees
---use returnFriendsList (thisuserid int)
+
 
 --threeDegrees
-
 create or replace function ThreeDegree(start_uid int,end_uid int)
     returns varchar as
 $$
@@ -584,7 +583,7 @@ values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 -- select * from returnFriendsList(1);
 -- select * from returnFriendsList(4);
 
--- --test threeDegree
+-- -- --test threeDegree
 -- insert into friend values(3,2,'2019-05-02','dang');
 -- insert into friend values(3,1,'2019-05-02','dang');
 -- insert into friend values(4,2,'2019-05-02','dang');
@@ -592,8 +591,7 @@ values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 -- insert into friend values(1,5,'2019-05-02','dang');
 -- insert into friend values(4,5,'2019-05-02','dang');
 -- insert into friend values(6,5,'2019-05-02','dang');
--- select * from ThreeDegree(2,2);
---
--- select fid1 from (select friendID fid1 from returnFriendsList(3)) hop1,
---                       (select returnFriendIDsList(user_id) fid2,user_id from profile) hop2
---                       where fid1 = hop2.user_id and fid2=4;
+-- select * from ThreeDegree(6,4);
+
+--test show friendRequests
+select * from showfriendrequests(4);

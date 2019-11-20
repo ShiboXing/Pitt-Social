@@ -86,27 +86,27 @@ public class PittSocial {
         PreparedStatement st=_conn.prepareStatement("select * from showfriendrequests(?);");
         st.setInt(1,currentUserId);
         ResultSet rs=st.executeQuery();
-        String col1=rs.getMetaData().getColumnName(1);
-        System.out.println("col1: "+col1);
+        System.out.println(st);
+        List<Triplet<Integer,String,Object>> res= new ArrayList<>();
         while(rs.next())
-        {
+            res.add(new Triplet<>(rs.getInt(1),rs.getString(2),null));
 
-        }
-        return new ArrayList();
+        return res;
     }
 
     public List showGroupRequests() throws SQLException {
         PreparedStatement st=_conn.prepareStatement("select * from showGrouprequests(?);");
         st.setInt(1,currentUserId);
         ResultSet rs=st.executeQuery();
-        String col1=rs.getMetaData().getColumnName(1);
-        System.out.println("col1: "+col1);
+        List<Triplet<Integer,Integer,String>> res= new ArrayList<>();
         while(rs.next())
-        {
+            res.add(new Triplet<>(rs.getInt(1),rs.getInt(2),rs.getString(3)));
 
-        }
-        return new ArrayList();
+        return res;
     }
+
+    
+
 
 
 
