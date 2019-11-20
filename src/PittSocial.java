@@ -2,10 +2,12 @@ import java.io.IOException;
 import java.sql.Date;
 import java.util.*;
 import java.sql.*;
+import java.util.concurrent.Callable;
 
 public class PittSocial {
     private Connection _conn;
     private int currentUserId;
+    private Timestamp loginTime;
 
     public PittSocial(Connection new_conn) throws ClassNotFoundException, SQLException {
         _conn=new_conn;
@@ -29,16 +31,15 @@ public class PittSocial {
           st.setString(2,password);
           ResultSet rs=st.executeQuery();
           rs.next();
-          String col1=rs.getMetaData().getColumnName(1);
-          int resID=rs.getInt(col1);
+          int resID=rs.getInt(1);
 
-          assert !rs.next():"rs contains more than one row!";
           System.out.println(st);
 
           if (resID==0) //match not found
               return -1;
           else {
               this.currentUserId = resID;
+              this.loginTime=rs.getTimestamp(2);
               return 0;
           }
     }
@@ -169,9 +170,43 @@ public class PittSocial {
         res+=head;
         res+=head2;
         while(rs.next())
-            res+=String.format(format,rs.getInt(2), rs.getString(3),rs.getTimestamp(6))+'\n';
-
+            res+=String.format(format,rs.getString(1), rs.getString(2),rs.getTimestamp(3))+'\n';
 
         return res;
+    }
+
+    public String displayNewMessages() throws SQLException {
+        PreparedStatement st=_conn.prepareStatement("select * from displayNewMessages(?)");
+        st.setInt(1,currentUserId);
+        ResultSet rs=st.executeQuery();
+        System.out.println(st);
+        String res="";
+        int firstWidth=10;
+        int secondWidth=50;
+        int thirdWidth=30;
+
+        String format="%1$"+firstWidth+"s | %2$"+secondWidth+"s | %3$"+thirdWidth+"s";
+        String head=String.format(format,"Sender","Content","Time Sent")+'\n';
+        String head2="";
+        for (int i=0;i<firstWidth+secondWidth+thirdWidth+6;i++) head2+='-';
+        head2=head2+'\n';
+
+        res+=head;
+        res+=head2;
+        while(rs.next())
+            res+=String.format(format,rs.getString(1), rs.getString(2),rs.getTimestamp(3))+'\n';
+        return res;
+    }
+
+    public int logout() throws SQLException {
+        CallableStatement st=_conn.prepareCall("call logout(?,?)");
+        st.setInt(1,currentUserId);
+        st.setTimestamp(2,loginTime);
+        st.execute();
+        System.out.println(st);
+
+        int resID=currentUserId;
+        currentUserId=-1;
+        return resID;
     }
 }

@@ -24,10 +24,13 @@ public class Driver {
         System.out.println(PS.login("1@1.org","111"));
         PS.initiateFriendship(4,"i'm NO. 1, add me NO. 4");
         PS.initiateFriendship(2,"i'm NO. 1, add me NO. 2");
+        System.out.println(PS.logout());
         System.out.println(PS.login("2@2.org","222"));
         PS.initiateFriendship(3,"i'm NO. 2, add me NO. 3");
         PS.initiateFriendship(1,"i'm NO. 2, add me NO. 1");
         PS.initiateFriendship(5,"i'm NO. 2, add me NO. 5");
+        PS.initiateFriendship(7,"i'm NO. 2, add me NO. 7");
+        System.out.println(PS.logout());
         System.out.println(PS.login("3@3.org","333"));
         PS.initiateFriendship(1,"i'm NO. 3, add me NO. 1");
         PS.initiateFriendship(2,"i'm NO. 3, add me NO. 2");
@@ -35,71 +38,112 @@ public class Driver {
         //test create group
         PS.createGroup("lame",3,"group 1 description");
         PS.createGroup("lame2",2,"group 2 description");
+        System.out.println(PS.logout());
         System.out.println(PS.login("1@1.org","111"));
         PS.createGroup("not lame",3,"group 3 description");
 
         //test initiateGroup
         PS.initiateAddingGroup(1,"my id is 1, put me into group 1");
         PS.initiateAddingGroup(2,"my id is 1, put me into group 2");
+        System.out.println(PS.logout());
+
+        System.out.println(PS.login("2@2.org","222"));
+        PS.initiateAddingGroup(2,"my id is 2, put me into group 2");
+        System.out.println(PS.logout());
         System.out.println(PS.login("5@5.org","555"));
         PS.initiateAddingGroup(3,"my id is 5, put me into group 3");
+        System.out.println(PS.logout());
         System.out.println(PS.login("4@4.org","444"));
         PS.initiateAddingGroup(1,"my id is 4, put me into group 1");
         PS.initiateAddingGroup(2,"my id is 4, put me into group 2");
+        System.out.println(PS.logout());
         System.out.println(PS.login("6@6.org","666"));
         PS.initiateAddingGroup(2,"my id is 6, put me into group 2");
+        System.out.println(PS.logout());
         System.out.println(PS.login("7@7.org","777"));
         PS.initiateAddingGroup(2,"my id is 7, put me into group 2");
 
         // test showFriendsRequests
         System.err.println(PS.showFriendRequests());
+        System.out.println(PS.logout());
         System.out.println(PS.login("1@1.org","111"));
         System.err.println(PS.showFriendRequests());
 
         //test showGroupRequests
+        System.out.println(PS.logout());
         System.out.println(PS.login("3@3.org","333"));
         System.err.println(PS.showGroupRequests());
+        System.out.println(PS.logout());
         System.out.println(PS.login("1@1.org","111"));
         System.err.println(PS.showGroupRequests());
 
         //test confirm friend and group requests
         PS.resolveFriendRequest(2,false);
         PS.resolveFriendRequest(3,true);
+        System.out.println(PS.logout());
         System.out.println(PS.login("5@5.org","555"));
         PS.resolveFriendRequest(2,true);
+        System.out.println(PS.logout());
         System.out.println(PS.login("2@2.org","222"));
         PS.resolveFriendRequest(3,true);
         PS.resolveFriendRequest(1,true);
+        System.out.println(PS.logout());
+        System.out.println(PS.login("7@7.org","777"));
+        PS.resolveFriendRequest(2,true);
 
+        System.out.println(PS.logout());
         System.out.println(PS.login("3@3.org","333"));
         PS.resolveGroupRequest(1,4,false);
-        PS.resolveGroupRequest(2,4,true);
+        PS.resolveGroupRequest(2,4,false);
+        PS.resolveGroupRequest(2,2,true);
         PS.resolveGroupRequest(2,7,true);
         PS.resolveGroupRequest(2,6,true);
+        System.out.println(PS.logout());
         System.out.println(PS.login("1@1.org","111"));
         PS.resolveGroupRequest(3,5,true);
 
         //test sendMessageToUser
+        System.out.println(PS.logout());
         System.out.println(PS.login("5@5.org","555"));
         System.err.println(PS.sendMessageToUser(2,"5 saying hi to 2"));
         System.err.println(PS.sendMessageToUser(2,"5 saying hi to 2"));
+        System.out.println(PS.logout());
         System.out.println(PS.login("2@2.org","222"));
         System.err.println(PS.sendMessageToUser(5,"2 saying hi to 5"));
+        System.out.println(PS.logout());
         System.out.println(PS.login("1@1.org","111"));
         System.err.println(PS.sendMessageToUser(3,"1 saying hi to 3"));
         System.err.println(PS.sendMessageToUser(2,"1 saying hi to 2"));
         System.err.println(PS.sendMessageToUser(2,"1 saying hi to 2"));
 
         //test sendMessageToGroup
+        System.out.println(PS.logout());
         System.out.println(PS.login("5@5.org","555"));
         System.err.println(PS.sendMessageToGroup(3,"5 saying hi to group 3"));
+        System.out.println(PS.logout());
         System.out.println(PS.login("1@1.org","111"));
         System.err.println(PS.sendMessageToGroup(3,"1 saying hi to group 3"));
+        System.out.println(PS.logout());
         System.out.println(PS.login("6@6.org","666"));
         System.err.println(PS.sendMessageToGroup(2,"6 saying hi to group 2"));
+        System.out.println(PS.logout());
+        System.out.println(PS.login("1@1.org","111"));
 
-        //test display messages
+        //test display messages and display new messages
+        System.out.println(PS.logout());
         System.out.println(PS.login("2@2.org","222"));
+        System.err.println(PS.displayMessages());
+        System.out.println(PS.logout());
+        System.out.println(PS.login("3@3.org","333"));
+        System.err.println(PS.displayMessages());
+        System.err.println(PS.sendMessageToGroup(2,"3 saying hi to group 2"));
+        System.err.println(PS.sendMessageToGroup(2,"3 saying hi to group 2"));
+        System.out.println(PS.logout());
+        System.out.println(PS.login("7@7.org","777"));
+        System.err.println(PS.sendMessageToUser(2,"7 saying hi to 2"));
+        System.out.println(PS.logout());
+        System.out.println(PS.login("2@2.org","222"));
+        System.err.println(PS.displayNewMessages());
         System.err.println(PS.displayMessages());
 
 

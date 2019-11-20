@@ -121,14 +121,13 @@ end;
 $$ language plpgsql;
 
 --returnUserName
-drop function if exists returnUserName (userid int);
-create or replace function returnUserName(user_id int) returns varchar as
+create or replace function returnUserName(thisUID int) returns varchar as
 $$
 declare
-    Name varchar;
+    res varchar;
 begin
-    select name into Name from profile p where p.user_id = user_id;
-    return Name;
+    select p.name into res from profile p where p.user_id = thisUID;
+    return res;
 end;
 $$ language plpgsql;
 
@@ -143,14 +142,12 @@ end;
 $$ language plpgsql;
 
 --login
-create or replace function login(inputEmail varchar(50), inputPassword varchar(50)) returns int as
+create or replace function login(inputEmail varchar(50), inputPassword varchar(50))
+returns table(uid int,last_login timestamp) as
 $$
-declare
-    thisUserid int;
 begin
-    select user_id into thisUserid from profile p where p.email = inputEmail and p.password = inputPassword;
-    update profile set lastlogin=now() where user_id=thisUserid;
-    return thisUserid;
+    return query
+        select user_id,now()::timestamp from profile p where p.email = inputEmail and p.password = inputPassword;
 end;
 $$ language plpgsql;
 
@@ -295,18 +292,16 @@ drop function if exists displayMessages(thisuserid int);
 create or replace function displayMessages(thisuserid int)
     returns table
             (
-                msgID     int,
-                fromID    int,
+
+                sender   varchar,
                 message   varchar(200),
-                toUserID  int,
-                toGroupID int,
                 timeSent  timestamp
             )
 as
 $$
 begin
     return query
-        select distinct *
+        select distinct returnusername(mi.fromid),mi.message,mi.timesent
         from MessageInfo mi
         where mi.msgid in (
             select mr.msgID
@@ -320,24 +315,21 @@ drop function if exists displayNewMessages(thisuserid int);
 create or replace function displayNewMessages(thisuserid int)
     returns table
             (
-                msgID     int,
-                fromID    int,
+                sender varchar,
                 message   varchar(200),
-                toUserID  int,
-                toGroupID int,
                 timeSent  timestamp
             )
 as
 $$
 begin
     return query
-        select *
+        select distinct returnusername(mi.fromid),mi.message,mi.timesent
         from MessageInfo mi
         where mi.msgid in (
             select mr.msgID
             from messagerecipient mr
             where mr.userid = thisuserid)
-          and timesent > (select lastlogin from profile where user_id = thisuserid);
+          and mi.timesent > (select lastlogin from profile where user_id = thisuserid);
 end;
 $$ language plpgsql;
 
@@ -499,11 +491,11 @@ end;
 $$ language plpgsql;
 
 --logout
-drop procedure if exists logout(thisuserid int, currentTime timestamp);
-create or replace procedure logout(thisuserid int, currentTime timestamp) as
+drop procedure if exists logout(thisuserid int, loginTime timestamp);
+create or replace procedure logout(thisuserid int, loginTime timestamp) as
 $$
 begin
-    update profile set lastlogin = currenttime where user_id = thisuserid;
+    update profile set lastlogin = loginTime where user_id = thisuserid;
 end;
 $$ language plpgsql;
 
