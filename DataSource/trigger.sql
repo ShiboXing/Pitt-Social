@@ -210,16 +210,21 @@ create or replace procedure confirmFriend(thisUserId int, fromId int) as
 $$
 begin
     insert into friend values(thisUserId,fromId, current_date,
-        (select message from pendingFriend pf where pf.fromid=fromId and pf.toid=thisUserId));
-    delete from pendingfriend p where p.fromId = fromId and p.toID = thisUserId;
+        (select message from pendingFriend pf where pf.fromid=confirmFriend.fromId and pf.toid=thisUserId));
+    delete from pendingfriend p where p.fromId = confirmFriend.fromId and p.toID = thisUserId;
 end;
 $$ language plpgsql;
-drop procedure if exists confirmGroupMember(gid int, fromId int);
-create or replace procedure confirmGroupMember(gid int, fromId int) as
+drop procedure if exists confirmGroupMember(thisUserId int,grouupId int, fromId int);
+create or replace procedure confirmGroupMember(thisUserId int,groupId int, fromId int) as
 $$
 begin
-    insert into groupmember values(gid,fromId,'non-manager');
-    delete from pendinggroupmember p where p.gid = gid and p.userid = fromid;
+    if ((select count(userid) from groupmember gm
+        where userid=thisUserId and role='manager' and gm.gid=groupId)=0) then
+        raise exception 'user does not have manager clearance';
+    end if;
+
+    insert into groupmember values(groupId,fromId,'non-manager');
+    delete from pendinggroupmember p where p.gid = groupId and p.userid = fromId;
 end;
 $$ language plpgsql;
 
@@ -594,4 +599,6 @@ values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 -- select * from ThreeDegree(6,4);
 
 --test show friendRequests
-select * from showfriendrequests(4);
+--select * from showfriendrequests(4);
+
+--call confirmFriend(1,2);

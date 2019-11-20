@@ -22,12 +22,12 @@ public class Driver {
 
         //test initiateFriend
         System.out.println(PS.login("1@1.org","111"));
-        PS.initiateFriendship(4,"add me NO. 4");
+        PS.initiateFriendship(4,"i'm NO. 1, add me NO. 4");
         System.out.println(PS.login("2@2.org","222"));
-        PS.initiateFriendship(3,"waddup");
-        PS.initiateFriendship(1,"waddup");
+        PS.initiateFriendship(3,"i'm NO. 2, add me NO. 3");
+        PS.initiateFriendship(1,"i'm NO. 2, add me NO. 1");
         System.out.println(PS.login("3@3.org","333"));
-        PS.initiateFriendship(1,"hi");
+        PS.initiateFriendship(1,"i'm NO. 3, add me NO. 1");
 
         //test create group
         PS.createGroup("lame",3,"group 1 description");
@@ -55,8 +55,13 @@ public class Driver {
         System.out.println(PS.login("1@1.org","111"));
         System.err.println(PS.showGroupRequests());
 
-
-
+        //test confirm friend and group requests
+        PS.confirmFriendRequest(2);
+        PS.confirmFriendRequest(3);
+        System.out.println(PS.login("3@3.org","333"));
+        PS.confirmGroupRequest(1,4);
+        System.out.println(PS.login("1@1.org","111"));
+        PS.confirmGroupRequest(3,5);
 
     }
 }

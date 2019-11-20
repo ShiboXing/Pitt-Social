@@ -11,5 +11,5 @@ public class Triplet<A,B,C> {
     public A first(){return a;}
     public B second(){return b;}
     public C third(){return c;}
-    public String toString(){ return a+" "+b+" "+c;}
+    public String toString(){ return " | "+a+"  "+b+"  "+c+" |";}
 }

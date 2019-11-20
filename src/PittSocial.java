@@ -105,9 +105,22 @@ public class PittSocial {
         return res;
     }
 
-    
+    public int confirmFriendRequest(int fromID) throws SQLException {
+        CallableStatement st=_conn.prepareCall("call confirmFriend(?,?);");
+        st.setInt(1,currentUserId);
+        st.setInt(2,fromID);
+        st.execute();
+        System.out.println(st);
+        return 0;
+    }
 
-
-
-
+    public int confirmGroupRequest(int gid, int fromID) throws SQLException {
+        CallableStatement st=_conn.prepareCall("call confirmGroupMember(?,?,?);");
+        st.setInt(1,currentUserId);
+        st.setInt(2,gid);
+        st.setInt(3,fromID);
+        st.execute();
+        System.out.println(st);
+        return 0;
+    }
 }
