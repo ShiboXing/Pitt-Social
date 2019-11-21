@@ -5,8 +5,8 @@ import java.sql.*;
 import java.util.Properties;
 
 public class DataManager {
-    final private String schemaSource = "DataSource/schema.sql";
-    final private String triggerSource = "DataSource/trigger.sql";
+    final private String schemaSource = "../DataSource/schema.sql";
+    final private String triggerSource = "../DataSource/trigger.sql";
     final private String adminUser = "postgres";
     final private String adminPassword = "team3";
     final private String databaesUrl = "jdbc:postgresql://localhost/postgres";
