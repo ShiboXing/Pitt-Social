@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.sql.*;
 import java.util.concurrent.Callable;
@@ -11,6 +13,7 @@ public class PittSocial {
 
     public PittSocial(Connection new_conn) throws ClassNotFoundException, SQLException {
         _conn = new_conn;
+        this.currentUserId = -1;
     }
 
     public void createUser(String username, String email, String password, String birthDate) throws SQLException {
@@ -215,6 +218,10 @@ public class PittSocial {
     public String dropUser() {
         return null;
 
+    }
+
+    public boolean isLoggedIn() {
+        return this.currentUserId != -1;
     }
 
     private String createDisplayMessageBody(ResultSet rs, int firstWidth, int secondWidth, int thirdWidth) throws SQLException {

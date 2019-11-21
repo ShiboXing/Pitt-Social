@@ -1,3 +1,1 @@
-cd ./bin
-java -cp ".;../Libraries/postgresql-42.2.5.jar" Driver
-cd ..
+java -cp ";../Libraries/postgresql-42.2.5.jar;./bin" Driver

@@ -1,20 +1,21 @@
 import java.io.Console;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
 public class Driver {
 
-    public static void main(String args[]) throws ClassNotFoundException, SQLException, IOException {
+    public static void main(String args[]) throws ClassNotFoundException, SQLException, IOException, InterruptedException {
 
 
         DataManager dataManager = new DataManager();
         dataManager.initDatabase();
         /*---- schema.sql contains 'set search_path to pitt_social;' !!! --- */
-        PittSocial PS = new PittSocial(dataManager.getConnection());
-        enterMainMenu();
+        PittSocial pittSocial = new PittSocial(dataManager.getConnection());
+        enterMainMenu(pittSocial);
 
         //test createuser
 //        PS.createUser("didi", "1@1.org", "111", "1900-09-10");
@@ -166,29 +167,316 @@ public class Driver {
 
     }
 
-    public static void printMainMenu() {
+    public static void printMainMenu(boolean loginStatus) {
         StringBuilder menu = new StringBuilder(InfoPrinter.createTitle("Welcome to Pitt Social", 60));
         menu.append("\nOperations: \n");
-        ArrayList<String> operationList = new ArrayList<>(Arrays.asList("User Menu", "Group Menu"));
-        for (int i=0; i<operationList.size(); i++) {
+        ArrayList<String> operationList = new ArrayList<>();
+        if (!loginStatus) {
+            operationList.add("Login");
+        } else {
+            operationList.add("Logout");
+        }
+        operationList.addAll(Arrays.asList("Register", "User Management", "Group Management", "Requests Management", "Messages Management", "Exit"));
+
+        for (int i = 0; i < operationList.size(); i++) {
             menu.append("(").append(i).append(")\t").append(operationList.get(i)).append("\n");
         }
         System.out.println(menu);
     }
 
-    public static void enterMainMenu() {
+    public static void enterMainMenu(PittSocial pittSocial) throws IOException, InterruptedException {
         Console console = System.console();
-        if(console==null){
+        if (console == null) {
             System.err.println("Please run in Console!");
             System.exit(-1);
         }
-        console.flush();
-        printMainMenu();
-        String raw_input = System.console().readLine();
-        try {
-            int inputSelection = Integer.parseInt(raw_input);
-        } catch (NumberFormatException e) {
-            System.err.println("Please enter an Integer Number");
+        while (true) {
+            flushConsole();
+            printMainMenu(pittSocial.isLoggedIn());
+            String raw_input = System.console().readLine();
+            try {
+                int inputSelection = Integer.parseInt(raw_input);
+                if (inputSelection == 0) {
+                    if (pittSocial.isLoggedIn()) {
+                        enterLoginMenu();
+                    } else {
+                        enterLogoutMenu();
+                    }
+                } else if (inputSelection == 1) {
+                    enterRegisterMenu(pittSocial, console);
+                } else if (inputSelection == 2) {
+                    enterUserManagementMenu(pittSocial, console);
+                } else if (inputSelection == 3) {
+                    enterGroupManagementMenu();
+                } else if (inputSelection == 4) {
+                    enterRequestsManagementMenu();
+                } else if (inputSelection == 5) {
+                    enterMessagesManagementMenu();
+                } else if (inputSelection == 6) {
+                    boolean exitFlag = false;
+                    enterExitMenu(exitFlag);
+                    if (exitFlag) {
+                        break;
+                    }
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Please enter an Integer Number");
+            }
         }
+
+    }
+
+
+    public static void printRegisterMenu() {
+        StringBuilder menu = new StringBuilder(InfoPrinter.createTitle("Register", 60));
+        menu.append("\nOperations: \n");
+        ArrayList<String> operationList = new ArrayList<>(Arrays.asList("Create User", "Drop User"));
+        operationList.add("Upper Menu");
+        for (int i = 0; i < operationList.size(); i++) {
+            menu.append("(").append(i).append(")\t").append(operationList.get(i)).append("\n");
+        }
+        System.out.println(menu);
+    }
+
+    public static void enterRegisterMenu(PittSocial pittSocial, Console console) throws IOException, InterruptedException {
+        while (true) {
+            flushConsole();
+            printRegisterMenu();
+            String raw_input = System.console().readLine();
+            try {
+                int inputSelection = Integer.parseInt(raw_input);
+                if (inputSelection == 0) {
+                    enterCreateUserMenu(pittSocial, console);
+                } else if (inputSelection == 1) {
+                    enterDropUserMenu(pittSocial, console);
+                } else if (inputSelection == 2) {
+                    break;
+                }
+            } catch (NumberFormatException | SQLException e) {
+                System.err.println("Please enter an Integer Number");
+            }
+        }
+        enterMainMenu(pittSocial);
+    }
+
+    public static void printCreateUserMenu() {
+        System.out.println(InfoPrinter.createTitle("Create User", 60) + "\n");
+    }
+
+    public static void enterCreateUserMenu(PittSocial pittSocial, Console console) throws SQLException, IOException, InterruptedException {
+        do {
+            flushConsole();
+            printCreateUserMenu();
+            System.out.print("Input User Name: ");
+            String userName = console.readLine();
+            System.out.print("Input Email: ");
+            String email = console.readLine();
+            System.out.print("Input Birth Date (YYYY-MM-DD): ");
+            String birthDate = console.readLine();
+            System.out.print("Input Password: ");
+            String password = new String(console.readPassword());
+
+            System.out.println("Are you sure to creat the user: (Y / other char)");
+            System.out.println("UserName: " + userName);
+            System.out.println("Email: " + email);
+            System.out.println("Birth Date: " + birthDate);
+
+            String confirm = console.readLine();
+            if (confirm.equalsIgnoreCase("Y")) {
+                InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Creating User...");
+                pittSocial.createUser(userName, email, password, birthDate);
+                InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Creation Success, Press any key...");
+                console.reader().read();
+                break;
+            } else {
+                InfoPrinter.printWithColor(ConsoleColors.BLUE_BRIGHT, "Exiting Creat User...");
+                break;
+            }
+        } while (true);
+    }
+
+    public static void printDropUserMenu() {
+        System.out.println(InfoPrinter.createTitle("Drop User", 60) + "\n");
+    }
+
+    public static void enterDropUserMenu(PittSocial pittSocial, Console console) throws SQLException, IOException, InterruptedException {
+        if (pittSocial.isLoggedIn()) {
+            do {
+                flushConsole();
+                printDropUserMenu();
+                System.out.println("Are you sure to drop the current user? (Y / other char) (This will delete ALL the information of the current user)");
+                String confirm = console.readLine();
+                if (confirm.equalsIgnoreCase("Y")) {
+                    InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Dropping User...");
+                    pittSocial.dropUser();
+                    break;
+                } else {
+                    InfoPrinter.printWithColor(ConsoleColors.BLUE_BRIGHT, "Exiting Drop User...");
+                    break;
+                }
+            } while (true);
+            pittSocial.dropUser();
+        } else {
+            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Please Login First...");
+            console.reader().read();
+        }
+    }
+
+    public static void printUserManagementMenu() {
+        StringBuilder menu = new StringBuilder(InfoPrinter.createTitle("User Management", 60));
+        menu.append("\nOperations: \n");
+        ArrayList<String> operationList = new ArrayList<>(Arrays.asList("Friends Management", "Search User", "Show Three Degrees Friends"));
+        operationList.add("Upper Menu");
+        for (int i = 0; i < operationList.size(); i++) {
+            menu.append("(").append(i).append(")\t").append(operationList.get(i)).append("\n");
+        }
+        System.out.println(menu);
+    }
+
+    public static void enterUserManagementMenu(PittSocial pittSocial, Console console) throws IOException, InterruptedException {
+        while (true) {
+            flushConsole();
+            printUserManagementMenu();
+            String raw_input = System.console().readLine();
+            try {
+                int inputSelection = Integer.parseInt(raw_input);
+                if (inputSelection == 0) {
+                    enterFriendsManagementMenu(pittSocial, console);
+                } else if (inputSelection == 1) {
+
+                } else if (inputSelection == 2) {
+
+                } else if (inputSelection == 3) {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Please enter an Integer Number");
+            }
+        }
+        enterMainMenu(pittSocial);
+    }
+
+    public static void printFriendsManagementMenu() {
+        StringBuilder menu = new StringBuilder(InfoPrinter.createTitle("Friends Management", 60));
+        menu.append("\nOperations: \n");
+        ArrayList<String> operationList = new ArrayList<>(Arrays.asList("Initiate Friendship", "Display Friends"));
+        operationList.add("Upper Menu");
+        for (int i = 0; i < operationList.size(); i++) {
+            menu.append("(").append(i).append(")\t").append(operationList.get(i)).append("\n");
+        }
+        System.out.println(menu);
+    }
+
+    public static void enterFriendsManagementMenu(PittSocial pittSocial, Console console) throws IOException, InterruptedException {
+        while (true) {
+            flushConsole();
+            printFriendsManagementMenu();
+            String raw_input = System.console().readLine();
+            try {
+                int inputSelection = Integer.parseInt(raw_input);
+                if (inputSelection == 0) {
+
+                } else if (inputSelection == 1) {
+
+                } else if (inputSelection == 2) {
+
+                } else if (inputSelection == 3) {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Please enter an Integer Number");
+            }
+        }
+        enterMainMenu(pittSocial);
+    }
+
+    public static void printInitiateFriendshipMenu() {
+        System.out.println(InfoPrinter.createTitle("Initiate Friendship", 60) + "\n");
+    }
+
+    public static void enterInitiateFriendShipMenu(PittSocial pittSocial, Console console) throws IOException, InterruptedException, SQLException {
+        flushConsole();
+        printInitiateFriendshipMenu();
+        System.out.print("Input User Id: ");
+        int userId = Integer.parseInt(console.readLine());
+        System.out.print("Input Message: ");
+        String message = console.readLine();
+        pittSocial.initiateFriendship(userId, message);
+    }
+
+
+    public static void printGroupManagementMenu() {
+        StringBuilder menu = new StringBuilder(InfoPrinter.createTitle("Group Management", 60));
+        menu.append("\nOperations: \n");
+        ArrayList<String> operationList = new ArrayList<>(Arrays.asList("Create Group", "Initiate Adding Group"));
+        operationList.add("Upper Menu");
+        for (int i = 0; i < operationList.size(); i++) {
+            menu.append("(").append(i).append(")\t").append(operationList.get(i)).append("\n");
+        }
+        System.out.println(menu);
+    }
+
+    public static void enterGroupManagementMenu() {
+        printGroupManagementMenu();
+    }
+
+    public static void printRequestsManagementMenu() {
+        StringBuilder menu = new StringBuilder(InfoPrinter.createTitle("Requests Management", 60));
+        menu.append("\nOperations: \n");
+        ArrayList<String> operationList = new ArrayList<>(Arrays.asList("Friendship Requests", "Group Requests"));
+        operationList.add("Upper Menu");
+        for (int i = 0; i < operationList.size(); i++) {
+            menu.append("(").append(i).append(")\t").append(operationList.get(i)).append("\n");
+        }
+        System.out.println(menu);
+    }
+
+    public static void enterRequestsManagementMenu() {
+        printRequestsManagementMenu();
+    }
+
+    public static void printMessagesManagementMenu() {
+        StringBuilder menu = new StringBuilder(InfoPrinter.createTitle("Message Management", 60));
+        menu.append("\nOperations: \n");
+        ArrayList<String> operationList = new ArrayList<>(Arrays.asList("Display All Messages", "Display New Messages", "Display Top K Messages", "Send Message to User", "Send Message to Group"));
+        operationList.add("Upper Menu");
+        for (int i = 0; i < operationList.size(); i++) {
+            menu.append("(").append(i).append(")\t").append(operationList.get(i)).append("\n");
+        }
+        System.out.println(menu);
+    }
+
+    public static void enterMessagesManagementMenu() {
+        printMessagesManagementMenu();
+    }
+
+
+    public static void printLoginMenu() {
+
+    }
+
+    public static void enterLoginMenu() {
+
+    }
+
+    public static void printLogoutMenu() {
+
+    }
+
+    public static void enterLogoutMenu() {
+
+    }
+
+    public static void printExitMenu() {
+
+    }
+
+    public static void enterExitMenu(boolean exitFlag) {
+        
+    }
+
+
+    public static void flushConsole() throws IOException, InterruptedException {
+        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
     }
 }
