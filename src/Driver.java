@@ -1,3 +1,5 @@
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.io.Console;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -213,8 +215,8 @@ public class Driver {
                 } else if (inputSelection == 5) {
                     enterMessagesManagementMenu();
                 } else if (inputSelection == 6) {
-                    boolean exitFlag = false;
-                    enterExitMenu(exitFlag);
+                    System.out.println("Are you sure to exit? (Y / other char)");
+                    boolean exitFlag = console.readLine().equalsIgnoreCase("Y");
                     if (exitFlag) {
                         break;
                     }
@@ -468,11 +470,11 @@ public class Driver {
     }
 
     public static void printExitMenu() {
-
     }
 
     public static void enterExitMenu(boolean exitFlag) {
-        
+        printExitMenu();
+
     }
 
 
