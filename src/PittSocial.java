@@ -1,3 +1,5 @@
+import javafx.util.Pair;
+
 import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
@@ -33,18 +35,18 @@ public class PittSocial {
         st.setString(1, email);
         st.setString(2, password);
         ResultSet rs = st.executeQuery();
-        rs.next();
-        int resID = rs.getInt(1);
-
-        System.out.println(st);
-
-        if (resID == 0) //match not found
-            return -1;
-        else {
-            this.currentUserId = resID;
-            this.loginTime = rs.getTimestamp(2);
-            return 0;
+        if(rs.next()) {
+            int resID = rs.getInt(1);
+            if (resID == 0) //match not found
+                return -1;
+            else {
+                this.currentUserId = resID;
+                this.loginTime = rs.getTimestamp(2);
+                return 0;
+            }
         }
+        System.out.println(st);
+        return -1;
     }
 
     public int initiateFriendship(int toid, String msg) throws SQLException {
@@ -84,27 +86,21 @@ public class PittSocial {
     }
 
 
-    public List showFriendRequests() throws SQLException {
+    public String showFriendRequests() throws SQLException {
         PreparedStatement st = _conn.prepareStatement("select * from showfriendrequests(?);");
         st.setInt(1, currentUserId);
         ResultSet rs = st.executeQuery();
         System.out.println(st);
-        List<Triplet<Integer, String, Object>> res = new ArrayList<>();
-        while (rs.next())
-            res.add(new Triplet<>(rs.getInt(1), rs.getString(2), null));
 
-        return res;
+        return createDisplayFriendRequestBody(rs, 10, 50);
     }
 
-    public List showGroupRequests() throws SQLException {
+    public String showGroupRequests() throws SQLException {
         PreparedStatement st = _conn.prepareStatement("select * from showGrouprequests(?);");
         st.setInt(1, currentUserId);
         ResultSet rs = st.executeQuery();
-        List<Triplet<Integer, Integer, String>> res = new ArrayList<>();
-        while (rs.next())
-            res.add(new Triplet<>(rs.getInt(1), rs.getInt(2), rs.getString(3)));
 
-        return res;
+        return createDisplayGroupRequestBody(rs, 10, 10, 50);
     }
 
     public int resolveFriendRequest(int fromID, boolean confirm) throws SQLException {
@@ -210,7 +206,7 @@ public class PittSocial {
 
     }
 
-    public String topMessages() {
+    public String displayTopKMessages(int k) {
         return null;
 
     }
@@ -227,19 +223,19 @@ public class PittSocial {
     private String createDisplayMessageBody(ResultSet rs, int firstWidth, int secondWidth, int thirdWidth) throws SQLException {
         StringBuilder res = new StringBuilder();
 
-        res.append(InfoPrinter.createTitle("Display Message", firstWidth + secondWidth + thirdWidth + 6));
+        res.append(InfoPrinter.createTitle("Display Message", firstWidth + secondWidth + thirdWidth + 7));
 
         String format = "|%1$" + firstWidth + "s | %2$" + secondWidth + "s | %3$" + thirdWidth + "s" + " |";
         String head = String.format(format, "Sender", "Content", "Time Sent") + '\n';
 
         res.append(head);
-        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 6) +
+        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 7) +
                 "|\n";
         res.append(head2);
         while (rs.next()) {
             res.append(String.format(format, rs.getString(1), rs.getString(2), rs.getTimestamp(3))).append('\n');
         }
-        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 6)).append("|\n");
+        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 7)).append("|\n");
 
         return res.toString();
     }
@@ -298,5 +294,40 @@ public class PittSocial {
         res.append(headMid);
         return res.toString();
 
+    }
+
+    private String createDisplayFriendRequestBody(ResultSet rs, int firstWidth, int secondWidth) throws SQLException {
+        StringBuilder res = new StringBuilder();
+        res.append(InfoPrinter.createTitle("Friends Requests", firstWidth + secondWidth + 4));
+        String format = "|%1$" + firstWidth + "s | %2$" + secondWidth + "s" + " |";
+        String head = String.format(format, "User Id", "Message") + '\n';
+
+        res.append(head);
+        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + 4) +
+                "|\n";
+        res.append(head2);
+        while (rs.next())
+            res.append(String.format(format, rs.getInt(1), rs.getString(2))).append('\n');
+        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + 4)).append("|\n");
+
+        return res.toString();
+    }
+
+    private String createDisplayGroupRequestBody(ResultSet rs, int firstWidth, int secondWidth, int thirdWidth) throws SQLException {
+        StringBuilder res = new StringBuilder();
+        res.append(InfoPrinter.createTitle("Group Requests", firstWidth + secondWidth + thirdWidth + 7));
+        String format = "|%1$" + firstWidth + "s | %2$" + secondWidth + "s | %3$" + thirdWidth + "s" + " |";
+        String head = String.format(format, "Group Id", "User Id", "Message") + '\n';
+
+        res.append(head);
+        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 7) +
+                "|\n";
+        res.append(head2);
+        while (rs.next()) {
+            res.append(String.format(format, rs.getInt(1), rs.getInt(2), rs.getString(3))).append('\n');
+        }
+        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 7)).append("|\n");
+
+        return res.toString();
     }
 }
