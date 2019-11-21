@@ -1064,6 +1064,13 @@ public class Driver {
     }
 
     public static void flushConsole() throws IOException, InterruptedException {
-        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        final String os = System.getProperty("os.name");
+
+        if (os.contains("Windows")) {
+            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        } else {
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+        }
     }
 }
