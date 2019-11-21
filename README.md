@@ -20,16 +20,19 @@ Implemented Java methods and classes to accomplish user's operations
 ###### have Java 8 or higher installed on your local machine, a postgresql database installed on localhost
 
 First change the credentials in
-<h4> <code>src/DataManager.java</code> </h4> in accordance with your postgresql database <br>
+<h4> <code>src/DataManager.java</code> </h4> in accordance with your postgresql database <br> <br>
 
 In the root directory of the repository, you can run:<br>
-#### `javac -d src -cp Libraries/*.jar src/*.java`
+#### `compile.sh`
+for windows users:<br>
+#### `compile.bat`
 
 after compiling, you can run:
 
-#### `java -cp Libraries;src; Driver`
-
-to start the main driver.
+#### `run.sh`
+for windows users:<br>
+#### `run.bat`
+to start the program.
 
 
 
