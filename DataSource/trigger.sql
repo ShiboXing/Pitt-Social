@@ -389,8 +389,7 @@ $$ language plpgsql;
 
 
 --searchForUser
-drop function if exists searchForUser(keyword varchar);
-create or replace function searchForUser(keyword varchar) returns table(user_id int,name varchar,email varchar,password varchar,date_of_birth date,lastlogin timestamp) as
+create or replace function searchForUser(keyword varchar) returns table(user_id int,name varchar,email varchar) as
 $$
 begin
 return query select p.user_id, p.name, p.email from profile p where p.name like keyword or p.email like keyword;
