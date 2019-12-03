@@ -492,23 +492,24 @@ public class Driver {
 
     public static void enterSearchUserMenu(PittSocial pittSocial, Console console) throws IOException, InterruptedException, SQLException {
         flushConsole();
-        printInitiateFriendshipMenu();
+        printSearchUserMenu();
         System.out.print("Input User Id: ");
-        int userId = Integer.parseInt(console.readLine());
-        pittSocial.searchForUser();
+        String keyword = console.readLine();
+        System.out.println(pittSocial.searchForUser(keyword));
         InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Search User Success, Press any key...");
         console.reader().read();
     }
 
     public static void printShowThreeDegreesFriendsMenu() {
-        System.out.println(InfoPrinter.createTitle("Search User", 60) + "\n");
+        System.out.println(InfoPrinter.createTitle("Three Degrees Friends", 60) + "\n");
 
     }
 
     public static void enterShowThreeDegreesFriendsMenu(PittSocial pittSocial, Console console) throws IOException, InterruptedException, SQLException {
         flushConsole();
-        printInitiateFriendshipMenu();
-        pittSocial.threeDegrees();
+        printShowThreeDegreesFriendsMenu();
+        int targetUserId = Integer.parseInt(console.readLine());
+        System.out.println(pittSocial.threeDegrees(targetUserId));
         InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Show Three Degrees Friends Success, Press any key...");
         console.reader().read();
     }
@@ -836,7 +837,7 @@ public class Driver {
         if (pittSocial.isLoggedIn()) {
             while (true) {
                 flushConsole();
-                printRequestsManagementMenu();
+                printMessagesManagementMenu();
                 String raw_input = System.console().readLine();
                 try {
                     int inputSelection = Integer.parseInt(raw_input);
@@ -902,7 +903,7 @@ public class Driver {
         printDisplayAllMessagesMenu();
         System.out.println(pittSocial.displayMessages());
 
-        System.out.println("Display All Messages Success, Press any key...");
+        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT,"Display All Messages Success, Press any key...");
         console.reader().read();
     }
 
@@ -915,12 +916,12 @@ public class Driver {
         printDisplayNewMessagesMenu();
         System.out.println(pittSocial.displayNewMessages());
 
-        System.out.println("Display New Messages Success, Press any key...");
+        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Display New Messages Success, Press any key...");
         console.reader().read();
     }
 
     public static void printDisplayTopKMessagesMenu() {
-        System.out.println(InfoPrinter.createTitle("Display Top K Messages", 60) + "\n");
+        System.out.println(InfoPrinter.createTitle("Display Top K Users", 60) + "\n");
     }
 
     public static void enterDisplayTopKMessagesMenu(PittSocial pittSocial, Console console) throws IOException, InterruptedException, SQLException {
@@ -928,7 +929,7 @@ public class Driver {
         printDisplayTopKMessagesMenu();
         int k;
         while (true) {
-            System.out.println("Please input the number of messages you want to show, (E) to exit display top k messages...");
+            System.out.println("Please input the number of users you want to show, (E) to exit display top k messages...");
             String confirm = console.readLine();
             if (confirm.equalsIgnoreCase("E")) {
                 return;
@@ -943,7 +944,7 @@ public class Driver {
         }
         System.out.println(pittSocial.displayTopKMessages(k));
 
-        System.out.println("Display New Messages Success, Press any key...");
+        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Display Top k Messages Success, Press any key...");
         console.reader().read();
     }
 

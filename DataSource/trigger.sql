@@ -393,7 +393,7 @@ drop function if exists searchForUser(keyword varchar);
 create or replace function searchForUser(keyword varchar) returns table(user_id int,name varchar,email varchar,password varchar,date_of_birth date,lastlogin timestamp) as
 $$
 begin
-return query select * from profile where name like keyword or email like keyword;
+return query select p.user_id, p.name, p.email from profile p where p.name like keyword or p.email like keyword;
 end;
 $$language plpgsql;
 
@@ -451,7 +451,7 @@ create or replace function topMessagesRecievedFrom(thisuserid int, k int, curren
     returns table
             (
                 userid int,
-                name   int
+                "name"   varchar
             )
 as
 $$
@@ -472,7 +472,7 @@ create or replace function topMessagesSentTo(thisuserid int, k int, currentTimeM
     returns table
             (
                 userid int,
-                name   int
+                "name"   varchar
             )
 as
 $$
