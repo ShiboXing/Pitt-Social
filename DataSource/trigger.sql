@@ -449,8 +449,7 @@ drop function if exists topMessagesRecievedFrom(thisuserid int, k int, currentTi
 create or replace function topMessagesRecievedFrom(thisuserid int, k int, currentTimeMinusSixMonth timestamp)
     returns table
             (
-                userid int,
-                "name"   varchar
+                userid int
             )
 as
 $$
@@ -470,8 +469,7 @@ drop function if exists topMessagesSentTo(thisuserid int, k int, currentTimeMinu
 create or replace function topMessagesSentTo(thisuserid int, k int, currentTimeMinusSixMonth timestamp)
     returns table
             (
-                userid int,
-                "name"   varchar
+                userid int
             )
 as
 $$

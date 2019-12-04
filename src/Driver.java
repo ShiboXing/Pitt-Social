@@ -309,10 +309,10 @@ public class Driver {
         if (confirm.equalsIgnoreCase("Y")) {
             InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Creating User...");
             pittSocial.createUser(userName, email, password, birthDate);
-            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Creation Success, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Creation Success, Press Enter...");
             console.reader().read();
         } else {
-            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Creation, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Creation, Press Enter...");
             console.reader().read();
         }
     }
@@ -330,10 +330,10 @@ public class Driver {
             if (confirm.equalsIgnoreCase("Y")) {
                 InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Dropping User...");
                 pittSocial.dropUser();
-                InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Drop User Success, Press any key...");
+                InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Drop User Success, Press Enter...");
                 console.reader().read();
             } else {
-                InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Drop User, Press any key...");
+                InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Drop User, Press Enter...");
                 console.reader().read();
             }
         } else {
@@ -464,10 +464,10 @@ public class Driver {
         if (confirm.equalsIgnoreCase("Y")) {
             InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Initiating Friendship...");
             pittSocial.initiateFriendship(userId, message);
-            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Initiate Friendship Success, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Initiate Friendship Success, Press Enter...");
             console.reader().read();
         } else {
-            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Initiating Friendship, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Initiating Friendship, Press Enter...");
             console.reader().read();
         }
     }
@@ -481,7 +481,7 @@ public class Driver {
         flushConsole();
         printDisplayFriendsMenu();
         System.out.println(pittSocial.displayFriends());
-        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Display Finished, Press any key...");
+        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Display Finished, Press Enter...");
         console.reader().read();
     }
 
@@ -496,7 +496,7 @@ public class Driver {
         System.out.print("Input User Id: ");
         String keyword = console.readLine();
         System.out.println(pittSocial.searchForUser(keyword));
-        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Search User Success, Press any key...");
+        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Search User Success, Press Enter...");
         console.reader().read();
     }
 
@@ -510,7 +510,7 @@ public class Driver {
         printShowThreeDegreesFriendsMenu();
         int targetUserId = Integer.parseInt(console.readLine());
         System.out.println(pittSocial.threeDegrees(targetUserId));
-        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Show Three Degrees Friends Success, Press any key...");
+        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Show Three Degrees Friends Success, Press Enter...");
         console.reader().read();
     }
 
@@ -586,10 +586,10 @@ public class Driver {
         if (confirm.equalsIgnoreCase("Y")) {
             InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Creating Group...");
             pittSocial.createGroup(groupName, limit, description);
-            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Creation Success, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Creation Success, Press Enter...");
             console.reader().read();
         } else {
-            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Creation, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Creation, Press Enter...");
             console.reader().read();
         }
     }
@@ -622,10 +622,10 @@ public class Driver {
         if (confirm.equalsIgnoreCase("Y")) {
             InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Initiating Adding Group...");
             pittSocial.initiateAddingGroup(groupId, message);
-            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Initiate Adding Group Success, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Initiate Adding Group Success, Press Enter...");
             console.reader().read();
         } else {
-            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Initiate Adding Group, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Initiate Adding Group, Press Enter...");
             console.reader().read();
         }
     }
@@ -736,12 +736,12 @@ public class Driver {
                 if (confirmAdd.equalsIgnoreCase("Y")) {
                     InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Resolving Friend Request...");
                     pittSocial.resolveFriendRequest(userId, true);
-                    InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Accept friend request Success, Press any key...");
+                    InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Accept friend request Success, Press Enter...");
                     console.reader().read();
                 } else {
                     InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Resolving Friend Request...");
                     pittSocial.resolveFriendRequest(userId, false);
-                    InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Deny friend request Success, Press any key...");
+                    InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Deny friend request Success, Press Enter...");
                     console.reader().read();
                 }
             }
@@ -810,12 +810,12 @@ public class Driver {
                 if (confirmAdd.equalsIgnoreCase("Y")) {
                     InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Resolving Group Request...");
                     pittSocial.resolveGroupRequest(groupId, userId, true);
-                    InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Accept friend request Success, Press any key...");
+                    InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Accept friend request Success, Press Enter...");
                     console.reader().read();
                 } else {
                     InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Resolving Group Request...");
                     pittSocial.resolveGroupRequest(groupId, userId, false);
-                    InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Deny friend request Success, Press any key...");
+                    InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Deny friend request Success, Press Enter...");
                     console.reader().read();
                 }
             }
@@ -903,7 +903,7 @@ public class Driver {
         printDisplayAllMessagesMenu();
         System.out.println(pittSocial.displayMessages());
 
-        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT,"Display All Messages Success, Press any key...");
+        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Display All Messages Success, Press Enter...");
         console.reader().read();
     }
 
@@ -916,7 +916,7 @@ public class Driver {
         printDisplayNewMessagesMenu();
         System.out.println(pittSocial.displayNewMessages());
 
-        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Display New Messages Success, Press any key...");
+        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Display New Messages Success, Press Enter...");
         console.reader().read();
     }
 
@@ -944,7 +944,7 @@ public class Driver {
         }
         System.out.println(pittSocial.displayTopKMessages(k));
 
-        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Display Top k Messages Success, Press any key...");
+        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Display Top k Messages Success, Press Enter...");
         console.reader().read();
     }
 
@@ -976,10 +976,10 @@ public class Driver {
         if (confirm.equalsIgnoreCase("Y")) {
             InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Sending Message...");
             pittSocial.sendMessageToUser(userId, message);
-            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Send Message Success, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Send Message Success, Press Enter...");
             console.reader().read();
         } else {
-            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Sending Message, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Sending Message, Press Enter...");
             console.reader().read();
         }
     }
@@ -1012,10 +1012,10 @@ public class Driver {
         if (confirm.equalsIgnoreCase("Y")) {
             InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Sending Message...");
             pittSocial.sendMessageToGroup(groupId, message);
-            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Send Message Success, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Send Message Success, Press Enter...");
             console.reader().read();
         } else {
-            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Sending Message, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Sending Message, Press Enter...");
             console.reader().read();
         }
     }
@@ -1035,7 +1035,7 @@ public class Driver {
         String password = new String(console.readPassword());
         int result = pittSocial.login(email, password);
         if (result == 0) {
-            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Login Success, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Login Success, Press Enter...");
             console.reader().read();
         } else {
             InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Login Fail, Record does not match...");
@@ -1055,10 +1055,10 @@ public class Driver {
         if (confirm.equalsIgnoreCase("Y")) {
             InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Logout User...");
             pittSocial.logout();
-            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Logout Success, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Logout Success, Press Enter...");
             console.reader().read();
         } else {
-            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled logout, Press any key...");
+            InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled logout, Press Enter...");
             console.reader().read();
         }
 

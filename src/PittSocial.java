@@ -34,7 +34,7 @@ public class PittSocial {
         st.setString(1, email);
         st.setString(2, password);
         ResultSet rs = st.executeQuery();
-        if(rs.next()) {
+        if (rs.next()) {
             int resID = rs.getInt(1);
             if (resID == 0) //match not found
                 return -1;
@@ -210,7 +210,7 @@ public class PittSocial {
         return createDisplayThreeDegreesBody(rs, 50);
     }
 
-    public String displayTopKMessages(int k) throws SQLException{
+    public String displayTopKMessages(int k) throws SQLException {
         PreparedStatement st = _conn.prepareStatement("select * from topMessagesSentTo(?, ?, ?)");
         st.setInt(1, currentUserId);
         st.setInt(2, k);
@@ -228,7 +228,7 @@ public class PittSocial {
         st.setTimestamp(3, new Timestamp(c.getTimeInMillis()));
         ResultSet rs1 = st.executeQuery();
         System.out.println(st);
-        return createDisplayTopMessageBody(rs, 20, 20) + "\n" + createDisplayTopMessageBody(rs1, 20, 20);
+        return createDisplayTopMessageBody(rs, 20) + "\n" + createDisplayTopMessageBody(rs1, 20);
     }
 
     public String dropUser() {
@@ -386,19 +386,19 @@ public class PittSocial {
         return res.toString();
     }
 
-    private String createDisplayTopMessageBody(ResultSet rs, int firstWidth, int secondWidth) throws SQLException {
+    private String createDisplayTopMessageBody(ResultSet rs, int firstWidth) throws SQLException {
         StringBuilder res = new StringBuilder();
-        res.append(InfoPrinter.createTitle("Top Message Users", firstWidth + secondWidth + 4));
-        String format = "|%1$" + firstWidth + "s | %2$" + secondWidth + "s" + " |";
-        String head = String.format(format, "User Id", "Name") + '\n';
+        res.append(InfoPrinter.createTitle("Top Message Users", firstWidth + 1));
+        String format = "|%1$" + firstWidth + "s |";
+        String head = String.format(format, "User Id") + '\n';
 
         res.append(head);
-        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + 4) +
+        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + 1) +
                 "|\n";
         res.append(head2);
         while (rs.next())
-            res.append(String.format(format, rs.getInt(1), rs.getString(2))).append('\n');
-        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + 4)).append("|\n");
+            res.append(String.format(format, rs.getInt(1))).append('\n');
+        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + 1)).append("|\n");
 
         return res.toString();
     }
