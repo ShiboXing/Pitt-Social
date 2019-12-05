@@ -207,7 +207,7 @@ begin
     delete from pendingfriend p where p.fromId = resolveFriendRequest.fromId and p.toID = thisUserId;
 end;
 $$ language plpgsql;
-drop procedure if exists resolveGroupMemberRequest(thisUserId int,grouupId int, fromId int, isConfirm boolean);
+drop procedure if exists resolveGroupMemberRequest(thisUserId int,groupId int, fromId int, isConfirm boolean);
 create or replace procedure resolveGroupMemberRequest(thisUserId int,groupId int, fromId int,isConfirm boolean) as
 $$
 begin
@@ -215,7 +215,7 @@ begin
         where userid=thisUserId and role='manager' and gm.gid=groupId)=0) then
         raise exception 'user does not have manager clearance';
     end if;
-    if (isConfirm) then
+    if (isConfirm and (select count(userid) from groupmember where gid = groupid) < (select size from groupinfo where gid = groupid)) then
         insert into groupmember values(groupId,fromId,'non-manager');
     end if;
     delete from pendinggroupmember p where p.gid = groupId and p.userid = fromId;
@@ -446,45 +446,56 @@ $$ language plpgsql;
 
 
 --topMessages
-drop function if exists topMessagesRecievedFrom(thisuserid int, k int, currentTimeMinusSixMonth timestamp);
-create or replace function topMessagesRecievedFrom(thisuserid int, k int, currentTimeMinusSixMonth timestamp)
+create or replace function topMessagesRecievedFrom(thisuserid int, currentTimeMinusSixMonth timestamp)
     returns table
             (
                 userid int,
-                name   int
+                recipientcount int
             )
 as
 $$
 begin
-    return query select touserid
-                 from messageinfo
-                 where fromid = thisuserid
-                   and togroupid = null
-                   and timesent > currentTimeMinusSixMonth
-                 group by touserid
-                 order by count(msgid) desc
-                 limit k;
+    return query select m.touserid, count(m.msgid)
+                 from messageinfo m
+                 where m.fromid = thisuserid
+                   and m.togroupid is null
+                   and m.timesent > currentTimeMinusSixMonth
+                 group by m.touserid;
 end;
 $$ language plpgsql;
 
-drop function if exists topMessagesSentTo(thisuserid int, k int, currentTimeMinusSixMonth timestamp);
-create or replace function topMessagesSentTo(thisuserid int, k int, currentTimeMinusSixMonth timestamp)
+create or replace function topMessagesSentTo(thisuserid int, currentTimeMinusSixMonth timestamp)
     returns table
             (
                 userid int,
-                name   int
+                sendercount int
             )
 as
 $$
 begin
-    return query select fromid
-                 from messageinfo
-                 where touserid = thisuserid
-                   and togroupid = null
-                   and timesent > currentTimeMinusSixMonth
-                 group by fromid
-                 order by count(msgid) desc
-                 limit k;
+    return query select m.fromid, count(m.msgid)
+                 from messageinfo m
+                 where m.touserid = thisuserid
+                   and m.togroupid is null
+                   and m.timesent > currentTimeMinusSixMonth
+                 group by m.fromid;
+end;
+$$ language plpgsql;
+
+create or replace function topMessages(thisuserid int, k int, currentTimeMinusSixMonth timestamp)
+    returns table
+            (
+                userid int
+            )
+as
+$$
+
+begin
+    return query select r.userid from (
+         topmessagesrecievedfrom(thisuserid, currentTimeMinusSixMonth) as r
+    join  topmessagessentto(thisuserid, currentTimeminussixmonth) as s on r.userid = s.userid )
+    order by r.recipientcount + s.sendercount desc
+    limit k;
 end;
 $$ language plpgsql;
 
@@ -496,6 +507,19 @@ begin
     update profile set lastlogin = loginTime where user_id = thisuserid;
 end;
 $$ language plpgsql;
+
+--dropuser
+drop procedure if exists dropuser(thisuserid int);
+create or replace procedure dropuser(thisuserid int) as
+    $$
+    begin
+        delete from "groupmember" where userid = thisuserid;
+        delete from "friend" where userid1 = thisuserid or userid2 = thisuserid;
+        delete from "pendingfriend" where fromid = thisuserid or toid = thisuserid;
+        delete from "pendinggroupmember" where userid = thisuserid;
+        delete from "profile" where user_id = thisuserid;
+    end;
+    $$language plpgsql;
 
 
 --test save group recipients trigger
