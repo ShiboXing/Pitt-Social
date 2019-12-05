@@ -451,6 +451,7 @@ create or replace function topMessagesRecievedFrom(thisuserid int, currentTimeMi
             (
                 userid int,
                 recipientcount int
+
             )
 as
 $$
@@ -469,6 +470,7 @@ create or replace function topMessagesSentTo(thisuserid int, currentTimeMinusSix
             (
                 userid int,
                 sendercount int
+
             )
 as
 $$

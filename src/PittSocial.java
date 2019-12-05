@@ -30,12 +30,11 @@ public class PittSocial {
     }
 
     public int login(String email, String password) throws IOException, SQLException {
-
         PreparedStatement st = _conn.prepareStatement("select * from login(?,?);");
         st.setString(1, email);
         st.setString(2, password);
         ResultSet rs = st.executeQuery();
-        if(rs.next()) {
+        if (rs.next()) {
             int resID = rs.getInt(1);
             if (resID == 0) //match not found
                 return -1;
@@ -125,7 +124,6 @@ public class PittSocial {
     }
 
     public boolean sendMessageToUser(int toID, String msg) throws SQLException {
-
         PreparedStatement st = _conn.prepareStatement("select * from createMessage(?,?,?,?);");
         st.setInt(1, currentUserId);
         st.setInt(2, toID);
@@ -166,7 +164,6 @@ public class PittSocial {
     }
 
     public String displayFriends() throws SQLException {
-        String res = "";
         PreparedStatement st = _conn.prepareStatement("select * from returnFriendsList(?);");
         st.setInt(1, currentUserId);
         ResultSet rs = st.executeQuery();
@@ -176,7 +173,6 @@ public class PittSocial {
     }
 
     public String displayProfile(int userID) throws SQLException {
-        String res = "";
         PreparedStatement st = _conn.prepareStatement("select * from showProfile(?);");
         st.setInt(1, userID);
         ResultSet rs = st.executeQuery();
@@ -197,23 +193,46 @@ public class PittSocial {
         return resID;
     }
 
-    public String searchForUser() {
-        return null;
+    public String searchForUser(String keyword) throws SQLException {
+        PreparedStatement st = _conn.prepareStatement("select * from searchForUser(?)");
+        st.setString(1, keyword);
+        ResultSet rs = st.executeQuery();
+        System.out.println(st);
+        return createDisplaySearchUserBody(rs, 20, 20, 20);
     }
 
-    public String threeDegrees() {
-        return null;
-
+    public String threeDegrees(int targetUserId) throws SQLException {
+        PreparedStatement st = _conn.prepareStatement("select * from ThreeDegree(?, ?)");
+        st.setInt(1, this.currentUserId);
+        st.setInt(2, targetUserId);
+        ResultSet rs = st.executeQuery();
+        System.out.println(st);
+        return createDisplayThreeDegreesBody(rs, 50);
     }
 
-    public String displayTopKMessages(int k) {
-        return null;
+    public String displayTopKMessages(int k) throws SQLException {
+        PreparedStatement st = _conn.prepareStatement("select * from topMessagesSentTo(?, ?, ?)");
+        st.setInt(1, currentUserId);
+        st.setInt(2, k);
+        Date currentDate = new Date(System.currentTimeMillis());
+        Calendar c = Calendar.getInstance();
+        c.setTime(currentDate);
+        c.add(Calendar.MONTH, -6);
+        st.setTimestamp(3, new Timestamp(c.getTimeInMillis()));
+        ResultSet rs = st.executeQuery();
+        System.out.println(st);
 
+        st = _conn.prepareStatement("select * from topMessagesRecievedFrom(?, ?, ?)");
+        st.setInt(1, currentUserId);
+        st.setInt(2, k);
+        st.setTimestamp(3, new Timestamp(c.getTimeInMillis()));
+        ResultSet rs1 = st.executeQuery();
+        System.out.println(st);
+        return createDisplayTopMessageBody(rs, 20) + "\n" + createDisplayTopMessageBody(rs1, 20);
     }
 
     public String dropUser() {
         return null;
-
     }
 
     public boolean isLoggedIn() {
@@ -327,6 +346,59 @@ public class PittSocial {
             res.append(String.format(format, rs.getInt(1), rs.getInt(2), rs.getString(3))).append('\n');
         }
         res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 7)).append("|\n");
+
+        return res.toString();
+    }
+
+    private String createDisplaySearchUserBody(ResultSet rs, int firstWidth, int secondWidth, int thirdWidth) throws SQLException {
+        StringBuilder res = new StringBuilder();
+        res.append(InfoPrinter.createTitle("Search for User", firstWidth + secondWidth + thirdWidth + 7));
+        String format = "|%1$" + firstWidth + "s | %2$" + secondWidth + "s | %3$" + thirdWidth + "s" + " |";
+        String head = String.format(format, "User Id", "Username", "Email") + '\n';
+
+        res.append(head);
+        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 7) +
+                "|\n";
+        res.append(head2);
+        while (rs.next()) {
+            res.append(String.format(format, rs.getInt(1), rs.getString(2), rs.getString(3))).append('\n');
+        }
+        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 7)).append("|\n");
+
+        return res.toString();
+    }
+
+    private String createDisplayThreeDegreesBody(ResultSet rs, int firstWidth) throws SQLException {
+        StringBuilder res = new StringBuilder();
+        res.append(InfoPrinter.createTitle("Three Degrees", firstWidth + 1));
+        String format = "|%1$" + firstWidth + "s |";
+        String head = String.format(format, "Path") + '\n';
+
+        res.append(head);
+        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + 1) +
+                "|\n";
+        res.append(head2);
+        while (rs.next()) {
+            res.append(String.format(format, rs.getString(1))).append('\n');
+        }
+        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + 1)).append("|\n");
+
+        return res.toString();
+    }
+
+    private String createDisplayTopMessageBody(ResultSet rs, int firstWidth) throws SQLException {
+        StringBuilder res = new StringBuilder();
+        res.append(InfoPrinter.createTitle("Top Message Users", firstWidth + 1));
+        String format = "|%1$" + firstWidth + "s |";
+        String head = String.format(format, "User Id") + '\n';
+
+        res.append(head);
+        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + 1) +
+                "|\n";
+        res.append(head2);
+        while (rs.next())
+            res.append(String.format(format, rs.getInt(1))).append('\n');
+        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + 1)).append("|\n");
 
         return res.toString();
     }
