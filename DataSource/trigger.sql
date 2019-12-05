@@ -80,7 +80,7 @@ create trigger validFriends
     FOR EACH ROW
 execute procedure ifNewFriends();
 
-
+--before user remove
 create or replace function BeforeUserRemove() returns trigger as
 $$
     begin
@@ -89,8 +89,11 @@ $$
         end if;
 
         --update groupmember set userid = -1 where userid=old.user_id;
+
+
         delete from groupinfo where gid in
                 (select gid from groupmember where userid=old.user_id and role='manager');
+
         update messageinfo set touserid=-1 where touserid=old.user_id and not fromid = -1;
         update messageinfo set fromid=-1 where fromid=old.user_id and not touserid = -1;
 
@@ -104,7 +107,26 @@ create trigger userRemoved
     for each row
 execute function BeforeUserRemove();
 
+--before group remove
+create or replace function BeforeGroupRemove() returns trigger as
+$$
+    begin
+        if ((select count(*) from groupinfo where gid=-1)=0) then
+            insert into groupinfo values(-1,'dummy',100,'dummy');
+        end if;
 
+        --update groupmember set userid = -1 where userid=old.user_id;
+
+        update messageinfo set togroupid=-1 where togroupid=old.gid and not fromid = -1;
+        return old;
+    end;
+$$ language plpgsql;
+
+drop trigger if exists groupRemoved on profile;
+create trigger groupRemoved
+    before delete on groupinfo
+    for each row
+execute function BeforeGroupRemove();
 
 --Phase 2:
 
@@ -527,6 +549,9 @@ create or replace procedure dropuser(thisuserid int) as
         delete from "pendingfriend" where fromid = thisuserid or toid = thisuserid;
         delete from "pendinggroupmember" where userid = thisuserid;
         delete from "profile" where user_id = thisuserid;
+        delete from "messageinfo" where fromid = -1 and touserid = -1;
+        delete from "messageinfo" where fromid = -1 and togroupid = -1;
+
     end;
     $$language plpgsql;
 
