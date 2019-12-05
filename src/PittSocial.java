@@ -393,7 +393,7 @@ public class PittSocial {
         String head = String.format(format, "User Id") + '\n';
 
         res.append(head);
-        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + 1) +
+        String head2 = "|" + InfoPrinter.paddingCharcacter('-', firstWidth + 1) +
                 "|\n";
         res.append(head2);
         while (rs.next())
