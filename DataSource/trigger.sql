@@ -84,18 +84,18 @@ execute procedure ifNewFriends();
 create or replace function BeforeUserRemove() returns trigger as
 $$
     begin
-        if ((select count(*) from profile where user_id=-1)=0) then
+        if ((select count(*) from profile where userid=-1)=0) then
             insert into profile values(-1,'dummy','-@-.---','dummy',null,null);
         end if;
 
-        --update groupmember set userid = -1 where userid=old.user_id;
+        --update groupmember set userid = -1 where userid=old.userid;
 
 
         delete from groupinfo where gid in
-                (select gid from groupmember where userid=old.user_id and role='manager');
+                (select gid from groupmember where userid=old.userid and role='manager');
 
-        update messageinfo set touserid=-1 where touserid=old.user_id and not fromid = -1;
-        update messageinfo set fromid=-1 where fromid=old.user_id and not touserid = -1;
+        update messageinfo set touserid=-1 where touserid=old.userid and not fromid = -1;
+        update messageinfo set fromid=-1 where fromid=old.userid and not touserid = -1;
 
         return old;
     end;
@@ -115,14 +115,14 @@ $$
             insert into groupinfo values(-1,'dummy',100,'dummy');
         end if;
 
-        --update groupmember set userid = -1 where userid=old.user_id;
+        --update groupmember set userid = -1 where userid=old.userid;
 
         update messageinfo set togroupid=-1 where togroupid=old.gid and not fromid = -1;
         return old;
     end;
 $$ language plpgsql;
 
-drop trigger if exists groupRemoved on profile;
+drop trigger if exists groupRemoved on groupinfo;
 create trigger groupRemoved
     before delete on groupinfo
     for each row
@@ -148,7 +148,7 @@ $$
 declare
     res varchar;
 begin
-    select p.name into res from profile p where p.user_id = thisUID;
+    select p.name into res from profile p where p.userid = thisUID;
     return res;
 end;
 $$ language plpgsql;
@@ -169,7 +169,7 @@ returns table(uid int,last_login timestamp) as
 $$
 begin
     return query
-        select user_id,now()::timestamp from profile p where p.email = inputEmail and p.password = inputPassword;
+        select userid,now()::timestamp from profile p where p.email = inputEmail and p.password = inputPassword;
 end;
 $$ language plpgsql;
 
@@ -230,7 +230,6 @@ begin
 end;
 $$ language plpgsql;
 
-drop function if exists resolveGroupMemberRequest(thisUserId int,groupId int, fromId int, isConfirm boolean);
 create or replace function resolveGroupMemberRequest(thisUserId int,groupId int, fromId int,isConfirm boolean)
 returns boolean as
 $$
@@ -258,7 +257,7 @@ $$
 declare
     name varchar;
 begin
-    select p.name into name from profile p where p.user_id = userid;
+    select p.name into name from profile p where p.userid = userid;
     return name;
 end;
 $$ language plpgsql;
@@ -358,7 +357,7 @@ begin
             select mr.msgID
             from messagerecipient mr
             where mr.userid = thisuserid)
-          and mi.timesent > (select lastlogin from profile where user_id = thisuserid);
+          and mi.timesent > (select lastlogin from profile where userid = thisuserid);
 end;
 $$ language plpgsql;
 
@@ -369,9 +368,9 @@ create or replace function returnFriendsList(thisuserid int)
 $$
 begin
     return query
-        select name,p.user_id from (
-            (select user_id from profile where iffriends(thisuserid,user_id)) fids
-            join profile p on fids.user_id=p.user_id);
+        select name,p.userid from (
+            (select userid from profile where iffriends(thisuserid,userid)) fids
+            join profile p on fids.userid=p.userid);
 end;
 $$ language plpgsql;
 
@@ -381,7 +380,7 @@ create or replace function returnFriendIDsList(thisuserid int)
 $$
 begin
     return query
-        select user_id from profile where iffriends(thisuserid,user_id);
+        select userid from profile where iffriends(thisuserid,userid);
 end;
 $$ language plpgsql;
 
@@ -401,7 +400,7 @@ $$ language plpgsql;
 create or replace function showProfile(friendid int)
     returns table
             (
-                user_id       int,
+                userid       int,
                 name          varchar(50),
                 email         varchar(50),
                 date_of_birth date
@@ -410,16 +409,16 @@ as
 $$
 begin
     return query
-        select p.user_id, p.name, p.email, p.date_of_birth
+        select p.userid, p.name, p.email, p.date_of_birth
         from profile p
-        where p.user_id = friendid;
+        where p.userid = friendid;
 end;
 $$ language plpgsql;
 
 
 --searchForUser
 drop function if exists searchForUser(keyword varchar);
-create or replace function searchForUser(keyword varchar) returns table(user_id int,name varchar,email varchar,password varchar,date_of_birth date,lastlogin timestamp) as
+create or replace function searchForUser(keyword varchar) returns table(userid int,name varchar,email varchar,password varchar,date_of_birth date,lastlogin timestamp) as
 $$
 begin
 return query select * from profile where name like keyword or email like keyword;
@@ -438,33 +437,33 @@ $$
 
         elseif(end_uid in (select distinct fid2 from
                       (select friendID fid1 from returnFriendIDsList(start_uid)) hop1,
-                      (select returnFriendIDsList(user_id) fid2,user_id from profile) hop2
-                      where fid1 = hop2.user_id)) then
+                      (select returnFriendIDsList(userid) fid2,userid from profile) hop2
+                      where fid1 = hop2.userid)) then
             return start_uid || '->' || (select fid1 from (select friendID fid1 from returnFriendsList(start_uid)) hop1,
-                      (select returnFriendIDsList(user_id) fid2,user_id from profile) hop2
-                      where fid1 = hop2.user_id and fid2=end_uid limit 1)
+                      (select returnFriendIDsList(userid) fid2,userid from profile) hop2
+                      where fid1 = hop2.userid and fid2=end_uid limit 1)
                   || '->' ||end_uid;
         elseif(end_uid in (select distinct fid3 from
                     (select distinct fid2 from
                       (select friendID fid1 from returnFriendIDsList(start_uid)) hop1,
-                      (select returnFriendIDsList(user_id) fid2,user_id from profile) hop2
-                      where fid1 = hop2.user_id) hop2_ids,
-                    (select returnfriendidslist(user_id) fid3,user_id from profile) hop3
-                    where hop2_ids.fid2=hop3.user_id)) then
+                      (select returnFriendIDsList(userid) fid2,userid from profile) hop2
+                      where fid1 = hop2.userid) hop2_ids,
+                    (select returnfriendidslist(userid) fid3,userid from profile) hop3
+                    where hop2_ids.fid2=hop3.userid)) then
                 return start_uid || '->' || (select distinct fid1 from
                     (select distinct fid2,fid1 from
                       (select friendID fid1 from returnFriendIDsList(start_uid)) hop1,
-                      (select returnFriendIDsList(user_id) fid2,user_id from profile) hop2
-                      where fid1 = hop2.user_id) hop2_ids,
-                    (select returnfriendidslist(user_id) fid3,user_id from profile) hop3
-                    where hop2_ids.fid2=hop3.user_id and fid3=end_uid limit 1) || '->' ||
+                      (select returnFriendIDsList(userid) fid2,userid from profile) hop2
+                      where fid1 = hop2.userid) hop2_ids,
+                    (select returnfriendidslist(userid) fid3,userid from profile) hop3
+                    where hop2_ids.fid2=hop3.userid and fid3=end_uid limit 1) || '->' ||
                     (select distinct fid2 from
                         (select distinct fid2 from
                           (select friendID fid1 from returnFriendIDsList(start_uid)) hop1,
-                          (select returnFriendIDsList(user_id) fid2,user_id from profile) hop2
-                          where fid1 = hop2.user_id) hop2_ids,
-                        (select returnfriendidslist(user_id) fid3,user_id from profile) hop3
-                    where hop2_ids.fid2=hop3.user_id and fid3=end_uid limit 1) || '->' ||
+                          (select returnFriendIDsList(userid) fid2,userid from profile) hop2
+                          where fid1 = hop2.userid) hop2_ids,
+                        (select returnfriendidslist(userid) fid3,userid from profile) hop3
+                    where hop2_ids.fid2=hop3.userid and fid3=end_uid limit 1) || '->' ||
                     end_uid;
         end if;
         return '-1';
@@ -475,11 +474,12 @@ $$ language plpgsql;
 
 
 --topMessages
+drop function if exists topmessagesrecievedfrom(thisuserid integer, currenttimeminussixmonth timestamp);
 create or replace function topMessagesRecievedFrom(thisuserid int, currentTimeMinusSixMonth timestamp)
     returns table
             (
-                userid int,
-                recipientcount int
+                useridr int,
+                recipientcount bigint
 
             )
 as
@@ -493,12 +493,12 @@ begin
                  group by m.touserid;
 end;
 $$ language plpgsql;
-
+drop function if exists topmessagessentto(thisuserid integer, currenttimeminussixmonth timestamp);
 create or replace function topMessagesSentTo(thisuserid int, currentTimeMinusSixMonth timestamp)
     returns table
             (
-                userid int,
-                sendercount int
+                userids int,
+                sendercount bigint
 
             )
 as
@@ -522,10 +522,12 @@ as
 $$
 
 begin
-    return query select r.userid from (
-         topmessagesrecievedfrom(thisuserid, currentTimeMinusSixMonth) as r
-    join  topmessagessentto(thisuserid, currentTimeminussixmonth) as s on r.userid = s.userid )
-    order by r.recipientcount + s.sendercount desc
+    return query select rsp.userid from (
+         (select * from topmessagesrecievedfrom(thisuserid, currentTimeMinusSixMonth) as r
+    left outer join profile p on r.useridr = p.userid) as rp
+    left outer join (select * from topmessagessentto(thisuserid, currentTimeminussixmonth)) as s
+        on rp.userid = s.userids ) as rsp
+    order by coalesce(rsp.sendercount,0)+coalesce(rsp.recipientcount,0) desc
     limit k;
 end;
 $$ language plpgsql;
@@ -535,7 +537,7 @@ drop procedure if exists logout(thisuserid int, loginTime timestamp);
 create or replace procedure logout(thisuserid int, loginTime timestamp) as
 $$
 begin
-    update profile set lastlogin = loginTime where user_id = thisuserid;
+    update profile set lastlogin = loginTime where userid = thisuserid;
 end;
 $$ language plpgsql;
 
@@ -548,7 +550,7 @@ create or replace procedure dropuser(thisuserid int) as
         delete from "friend" where userid1 = thisuserid or userid2 = thisuserid;
         delete from "pendingfriend" where fromid = thisuserid or toid = thisuserid;
         delete from "pendinggroupmember" where userid = thisuserid;
-        delete from "profile" where user_id = thisuserid;
+        delete from "profile" where userid = thisuserid;
         delete from "messageinfo" where fromid = -1 and touserid = -1;
         delete from "messageinfo" where fromid = -1 and togroupid = -1;
 
@@ -569,7 +571,7 @@ values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 
 
 --test UserRemoved trigger
---delete from profile where user_id=4;
+--delete from profile where userid=4;
 
 --test save group recipients trigger
 /*
@@ -583,7 +585,7 @@ insert into messageinfo(fromid, message, touserid, togroupid, timesent)
 values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 
 --test UserRemoved trigger
---delete from profile where user_id=4;
+--delete from profile where userid=4;
 
 
 --test BeforeUserDelete trigger
@@ -598,9 +600,9 @@ values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 -- insert into groupmember values(3,3,'lali');
 -- insert into messageinfo(fromid, message, touserid, togroupid, timesent) values (3,'qw',1,null,null);
 -- insert into messageinfo(fromid, message, touserid, togroupid, timesent) values (3,'qw',2,null,null);
--- delete from profile where user_id=3;
--- delete from profile where user_id=2;
--- delete from profile where user_id=1;
+-- delete from profile where userid=3;
+-- delete from profile where userid=2;
+-- delete from profile where userid=1;
 
 
 -- --test returnFriendsList
