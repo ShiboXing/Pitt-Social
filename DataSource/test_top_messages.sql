@@ -16,14 +16,5 @@ INSERT INTO "messageinfo" (fromid, message, touserid, togroupid, timesent) VALUE
 INSERT INTO "messageinfo" (fromid, message, touserid, togroupid, timesent) VALUES (1,'euismod.et.commodo@ut.ca',3,null,'2019-07-23 02:25:34');
 INSERT INTO "messageinfo" (fromid, message, touserid, togroupid, timesent) VALUES (3,'euismod.et.commodo@ut.ca',1,null,'2019-07-23 02:25:34');
 select topmessages(1,1,'2019-01-23 02:25:34.000000');
-select showprofile(1);
 
-select * from
-        ( (
-             (select * from topmessagesrecievedfrom(1,'2019-01-23 02:25:34.000000') ) as r
-    right outer join
-             profile as p) as rp
-    left outer join (select * from topmessagessentto(1,'2019-01-23 02:25:34.000000')) as s
-        on rp.userid = s.userid)  as rsp
-    order by coalesce(rsp.sendercount,0)+coalesce(rsp.recipientcount,0)  desc
-    limit 1;
+select searchforuser('%Noble%');

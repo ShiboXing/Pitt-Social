@@ -417,11 +417,12 @@ $$ language plpgsql;
 
 
 --searchForUser
+-- the input keyword should be like '%somestuff%', the java file split the input keywords and call this function several times.
 drop function if exists searchForUser(keyword varchar);
 create or replace function searchForUser(keyword varchar) returns table(userid int,name varchar,email varchar,password varchar,date_of_birth date,lastlogin timestamp) as
 $$
 begin
-return query select * from profile where name like keyword or email like keyword;
+return query select * from profile p where p.name like keyword or p.email like keyword;
 end;
 $$language plpgsql;
 
