@@ -102,7 +102,7 @@ public class Driver {
         pittSocial.resolveGroupRequest(2, 4, false);
         pittSocial.resolveGroupRequest(2, 2, true);
         pittSocial.resolveGroupRequest(2, 7, true);
-        pittSocial.resolveGroupRequest(2, 6, true);
+        System.out.println(pittSocial.resolveGroupRequest(2, 6, true));
         System.out.println(pittSocial.logout());
         System.out.println(pittSocial.login("1@1.org", "111"));
         pittSocial.resolveGroupRequest(3, 5, true);
@@ -809,12 +809,16 @@ public class Driver {
                 String confirmAdd = console.readLine();
                 if (confirmAdd.equalsIgnoreCase("Y")) {
                     InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Resolving Group Request...");
-                    pittSocial.resolveGroupRequest(groupId, userId, true);
-                    InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Accept friend request Success, Press Enter...");
+                    boolean result = pittSocial.resolveGroupRequest(groupId, userId, true);
+                    if (result) {
+                        InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Accept group request Success, Press Enter...");
+                    } else {
+                        InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Accept group request Fail, group Press Enter...");
+                    }
                     console.reader().read();
                 } else {
                     InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Resolving Group Request...");
-                    pittSocial.resolveGroupRequest(groupId, userId, false);
+                    boolean result = pittSocial.resolveGroupRequest(groupId, userId, false);
                     InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Deny friend request Success, Press Enter...");
                     console.reader().read();
                 }

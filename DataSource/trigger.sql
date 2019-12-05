@@ -207,18 +207,25 @@ begin
     delete from pendingfriend p where p.fromId = resolveFriendRequest.fromId and p.toID = thisUserId;
 end;
 $$ language plpgsql;
-drop procedure if exists resolveGroupMemberRequest(thisUserId int,groupId int, fromId int, isConfirm boolean);
-create or replace procedure resolveGroupMemberRequest(thisUserId int,groupId int, fromId int,isConfirm boolean) as
+
+drop function if exists resolveGroupMemberRequest(thisUserId int,groupId int, fromId int, isConfirm boolean);
+create or replace function resolveGroupMemberRequest(thisUserId int,groupId int, fromId int,isConfirm boolean)
+returns boolean as
 $$
+declare
+    inserted boolean;
 begin
+    inserted = false;
     if ((select count(userid) from groupmember gm
         where userid=thisUserId and role='manager' and gm.gid=groupId)=0) then
         raise exception 'user does not have manager clearance';
     end if;
     if (isConfirm and (select count(userid) from groupmember where gid = groupid) < (select size from groupinfo where gid = groupid)) then
         insert into groupmember values(groupId,fromId,'non-manager');
+        inserted = true;
     end if;
     delete from pendinggroupmember p where p.gid = groupId and p.userid = fromId;
+    return inserted;
 end;
 $$ language plpgsql;
 

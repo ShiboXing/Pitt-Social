@@ -112,15 +112,16 @@ public class PittSocial {
         return 0;
     }
 
-    public int resolveGroupRequest(int gid, int fromID, boolean confirm) throws SQLException {
-        CallableStatement st = _conn.prepareCall("call resolveGroupMemberRequest(?,?,?,?);");
+    public boolean resolveGroupRequest(int gid, int fromID, boolean confirm) throws SQLException {
+        CallableStatement st = _conn.prepareCall("select * from resolveGroupMemberRequest(?,?,?,?);");
         st.setInt(1, currentUserId);
         st.setInt(2, gid);
         st.setInt(3, fromID);
         st.setBoolean(4, confirm);
-        st.execute();
+        ResultSet rs = st.executeQuery();
         System.out.println(st);
-        return 0;
+        rs.next();
+        return rs.getBoolean(1);
     }
 
     public boolean sendMessageToUser(int toID, String msg) throws SQLException {
