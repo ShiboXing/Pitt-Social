@@ -5,6 +5,7 @@ set search_path to pitt_social;
 create or replace function saveRecipient() returns trigger as
 $$
 begin
+    
     if(new.togroupid is not null) then
         insert into messagerecipient
             select new.msgid,gm.userid from groupmember gm where gm.gid=new.togroupid;
@@ -350,6 +351,7 @@ create or replace function displayNewMessages(thisuserid int)
 as
 $$
 begin
+
     return query
         select distinct returnusername(mi.fromid),mi.message,mi.timesent
         from MessageInfo mi
@@ -357,7 +359,7 @@ begin
             select mr.msgID
             from messagerecipient mr
             where mr.userid = thisuserid)
-          and mi.timesent > (select lastlogin from profile where userid = thisuserid);
+          and (mi.timesent > (select lastlogin from profile where userid = thisuserid) or (select lastlogin from profile where userid = thisuserid) is null);
 end;
 $$ language plpgsql;
 
@@ -525,8 +527,8 @@ $$
 begin
     return query select rsp.userid from (
          (select * from topmessagesrecievedfrom(thisuserid, currentTimeMinusSixMonth) as r
-    left outer join profile p on r.useridr = p.userid) as rp
-    left outer join (select * from topmessagessentto(thisuserid, currentTimeminussixmonth)) as s
+    full outer join profile p on r.useridr = p.userid) as rp
+    full outer join (select * from topmessagessentto(thisuserid, currentTimeminussixmonth)) as s
         on rp.userid = s.userids ) as rsp
     order by coalesce(rsp.sendercount,0)+coalesce(rsp.recipientcount,0) desc
     limit k;
@@ -538,7 +540,7 @@ drop procedure if exists logout(thisuserid int, loginTime timestamp);
 create or replace procedure logout(thisuserid int, loginTime timestamp) as
 $$
 begin
-    update profile set lastlogin = loginTime where userid = thisuserid;
+    update profile set lastlogin = now() where userid = thisuserid;
 end;
 $$ language plpgsql;
 

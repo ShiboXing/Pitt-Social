@@ -21,10 +21,15 @@ public class DataManager {
         this._conn = DriverManager.getConnection(databaesUrl, props);
     }
 
-    public void initDatabase() throws SQLException, IOException {
-        executeSQLFile(this.schemaSource);
-        executeSQLFile(this.triggerSource);
+    public void initDatabase(boolean isInitiate) throws SQLException, IOException {
+        if (isInitiate) {
+            executeSQLFile(this.schemaSource);
+            executeSQLFile(this.triggerSource);
 //        executeSQLFile(this.testSource);
+        } else {
+            PreparedStatement st = _conn.prepareStatement("set search_path to pitt_social;");
+            st.execute();
+        }
     }
 
     public Connection getConnection()

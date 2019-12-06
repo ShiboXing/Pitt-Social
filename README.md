@@ -23,15 +23,17 @@ First change the credentials in
 <h4> <code>src/DataManager.java</code> </h4> in accordance with your postgresql database <br> <br>
 
 In the root directory of the repository, you can run:<br>
-#### `$  compile.sh`
+#### `$  sh ./compile.sh`
 for windows users:<br>
 #### `>  compile.bat`
 
 after compiling, you can run:
 
-#### `$  run.sh`
+#### `$  sh ./run.sh I` to initialized database   
+#### `$  sh ./run.sh` to run without initialization   
 for windows users:<br>
-#### `>  run.bat`
+#### `$  ./run.bat I` to initialized database   
+#### `$  ./run.bat` to run without initialization   
 to start the program.
 
 
