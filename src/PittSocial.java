@@ -1,5 +1,7 @@
 //import javafx.util.Pair;
 
+import javafx.util.Pair;
+
 import java.io.IOException;
 import java.sql.Date;
 import java.text.ParseException;
@@ -94,12 +96,36 @@ public class PittSocial {
         return createDisplayFriendRequestBody(rs, 10, 50);
     }
 
+    public ArrayList<Integer> getFriendRequests() throws SQLException {
+        PreparedStatement st = _conn.prepareStatement("select * from showfriendrequests(?);");
+        st.setInt(1, currentUserId);
+        ResultSet rs = st.executeQuery();
+        System.out.println(st);
+        ArrayList<Integer> result = new ArrayList<>();
+        while (rs.next()) {
+            result.add(rs.getInt(1));
+        }
+        return result;
+    }
+
     public String showGroupRequests() throws SQLException {
         PreparedStatement st = _conn.prepareStatement("select * from showGrouprequests(?);");
         st.setInt(1, currentUserId);
         ResultSet rs = st.executeQuery();
 
         return createDisplayGroupRequestBody(rs, 10, 10, 50);
+    }
+
+    public ArrayList<Pair<Integer, Integer>> getGroupRequests() throws SQLException {
+        PreparedStatement st = _conn.prepareStatement("select * from showGrouprequests(?);");
+        st.setInt(1, currentUserId);
+        ResultSet rs = st.executeQuery();
+        System.out.println(st);
+        ArrayList<Pair<Integer, Integer>> result = new ArrayList<>();
+        while (rs.next()) {
+            result.add(new Pair<>(rs.getInt(1), rs.getInt(2)));
+        }
+        return result;
     }
 
     public int resolveFriendRequest(int fromID, boolean confirm) throws SQLException {
@@ -196,7 +222,7 @@ public class PittSocial {
 
     public String searchForUser(String keyword) throws SQLException {
         PreparedStatement st = _conn.prepareStatement("select * from searchForUser(?)");
-        st.setString(1, keyword);
+        st.setString(1, "%" + keyword + "%");
         ResultSet rs = st.executeQuery();
         System.out.println(st);
         return createDisplaySearchUserBody(rs, 20, 20, 20);
@@ -212,7 +238,7 @@ public class PittSocial {
     }
 
     public String displayTopKMessages(int k) throws SQLException {
-        PreparedStatement st = _conn.prepareStatement("select * from topMessagesSentTo(?, ?, ?)");
+        PreparedStatement st = _conn.prepareStatement("select * from topMessages(?, ?, ?)");
         st.setInt(1, currentUserId);
         st.setInt(2, k);
         Date currentDate = new Date(System.currentTimeMillis());
@@ -222,14 +248,7 @@ public class PittSocial {
         st.setTimestamp(3, new Timestamp(c.getTimeInMillis()));
         ResultSet rs = st.executeQuery();
         System.out.println(st);
-
-        st = _conn.prepareStatement("select * from topMessagesRecievedFrom(?, ?, ?)");
-        st.setInt(1, currentUserId);
-        st.setInt(2, k);
-        st.setTimestamp(3, new Timestamp(c.getTimeInMillis()));
-        ResultSet rs1 = st.executeQuery();
-        System.out.println(st);
-        return createDisplayTopMessageBody(rs, 20) + "\n" + createDisplayTopMessageBody(rs1, 20);
+        return createDisplayTopMessageBody(rs, 20);
     }
 
     public String dropUser() {
@@ -380,7 +399,11 @@ public class PittSocial {
                 "|\n";
         res.append(head2);
         while (rs.next()) {
-            res.append(String.format(format, rs.getString(1))).append('\n');
+            String result = rs.getString(1);
+            if (result.equals("-1")) {
+                result = "No Such Path";
+            }
+            res.append(String.format(format, result)).append('\n');
         }
         res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + 1)).append("|\n");
 
@@ -394,7 +417,7 @@ public class PittSocial {
         String head = String.format(format, "User Id") + '\n';
 
         res.append(head);
-        String head2 = "|" + InfoPrinter.paddingCharcacter('-', firstWidth + 1) +
+        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + 1) +
                 "|\n";
         res.append(head2);
         while (rs.next())

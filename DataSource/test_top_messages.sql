@@ -10,6 +10,11 @@ INSERT INTO "messageinfo" (fromid, message, touserid, togroupid, timesent) VALUE
 INSERT INTO "messageinfo" (fromid, message, touserid, togroupid, timesent) VALUES (1,'euismod.et.commodo@ut.ca',2,null,'2019-07-23 02:25:34');
 INSERT INTO "messageinfo" (fromid, message, touserid, togroupid, timesent) VALUES (1,'euismod.et.commodo@ut.ca',2,null,'2019-07-23 02:25:34');
 INSERT INTO "messageinfo" (fromid, message, touserid, togroupid, timesent) VALUES (1,'euismod.et.commodo@ut.ca',3,null,'2019-07-23 02:25:34');
-
+INSERT INTO "messageinfo" (fromid, message, touserid, togroupid, timesent) VALUES (3,'euismod.et.commodo@ut.ca',1,null,'2019-07-23 02:25:34');
+INSERT INTO "messageinfo" (fromid, message, touserid, togroupid, timesent) VALUES (1,'euismod.et.commodo@ut.ca',3,null,'2019-07-23 02:25:34');
+INSERT INTO "messageinfo" (fromid, message, touserid, togroupid, timesent) VALUES (3,'euismod.et.commodo@ut.ca',1,null,'2019-07-23 02:25:34');
+INSERT INTO "messageinfo" (fromid, message, touserid, togroupid, timesent) VALUES (1,'euismod.et.commodo@ut.ca',3,null,'2019-07-23 02:25:34');
+INSERT INTO "messageinfo" (fromid, message, touserid, togroupid, timesent) VALUES (3,'euismod.et.commodo@ut.ca',1,null,'2019-07-23 02:25:34');
 select topmessages(1,1,'2019-01-23 02:25:34.000000');
-select showprofile(1);
+
+select searchforuser('%Noble%');
