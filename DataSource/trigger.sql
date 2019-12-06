@@ -547,10 +547,10 @@ drop procedure if exists dropuser(thisuserid int);
 create or replace procedure dropuser(thisuserid int) as
     $$
     begin
-        delete from "groupmember" where userid = thisuserid;
-        delete from "friend" where userid1 = thisuserid or userid2 = thisuserid;
-        delete from "pendingfriend" where fromid = thisuserid or toid = thisuserid;
-        delete from "pendinggroupmember" where userid = thisuserid;
+--         delete from "groupmember" where userid = thisuserid;
+--         delete from "friend" where userid1 = thisuserid or userid2 = thisuserid;
+--         delete from "pendingfriend" where fromid = thisuserid or toid = thisuserid;
+--         delete from "pendinggroupmember" where userid = thisuserid;
         delete from "profile" where userid = thisuserid;
         delete from "messageinfo" where fromid = -1 and touserid = -1;
         delete from "messageinfo" where fromid = -1 and togroupid = -1;
