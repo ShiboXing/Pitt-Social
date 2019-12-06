@@ -248,15 +248,28 @@ public class PittSocial {
         st.setTimestamp(3, new Timestamp(c.getTimeInMillis()));
         ResultSet rs = st.executeQuery();
         System.out.println(st);
-        return createDisplayTopMessageBody(rs, 20);
+        return createDisplayTopMessageBody(rs, 20, 20);
     }
 
-    public String dropUser() {
-        return null;
+    public int dropUser() throws SQLException {
+        PreparedStatement st = _conn.prepareStatement("call dropuser(?)");
+        st.setInt(1, this.currentUserId);
+        this.logout();
+        st.execute();
+        return 0;
     }
 
     public boolean isLoggedIn() {
         return this.currentUserId != -1;
+    }
+
+    public String getUserNameFromId(int userId) throws SQLException {
+        PreparedStatement st = _conn.prepareStatement("select * from returnUserName(?)");
+        st.setInt(1, userId);
+        ResultSet rs = st.executeQuery();
+        System.out.println(st);
+        rs.next();
+        return rs.getString(1);
     }
 
     private String createDisplayMessageBody(ResultSet rs, int firstWidth, int secondWidth, int thirdWidth) throws SQLException {
@@ -410,19 +423,21 @@ public class PittSocial {
         return res.toString();
     }
 
-    private String createDisplayTopMessageBody(ResultSet rs, int firstWidth) throws SQLException {
+    private String createDisplayTopMessageBody(ResultSet rs, int firstWidth, int secondWidth) throws SQLException {
         StringBuilder res = new StringBuilder();
-        res.append(InfoPrinter.createTitle("Top Message Users", firstWidth + 1));
+        res.append(InfoPrinter.createTitle("Top Message Users", firstWidth + secondWidth + 4));
         String format = "|%1$" + firstWidth + "s |";
-        String head = String.format(format, "User Id") + '\n';
+        String head = String.format(format, "User Id", "User Name") + '\n';
 
         res.append(head);
-        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + 1) +
+        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + 4) +
                 "|\n";
         res.append(head2);
-        while (rs.next())
-            res.append(String.format(format, rs.getInt(1))).append('\n');
-        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + 1)).append("|\n");
+        while (rs.next()) {
+            int _userId = rs.getInt(1);
+            res.append(String.format(format, _userId, this.getUserNameFromId(_userId))).append('\n');
+        }
+        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + 4)).append("|\n");
 
         return res.toString();
     }
