@@ -16,7 +16,7 @@ Implemented Java methods and classes to accomplish user's operations
 ## How to run
 ###### prerequisites: 
 ###### have Java 8 or higher installed on your local machine, a postgresql database installed on localhost
-###Mac users:
+### Mac users:
 First change the credentials in
 <h4> <code>src/DataManager.java</code> </h4> in accordance with your postgresql database <br> <br>
 
