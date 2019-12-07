@@ -32,8 +32,8 @@ to start the program.
 Run <br>
 #### `>  compile.bat` to compile. <br>
 
-#### `$  ./run.bat I` to initialize database   
-#### `$  ./run.bat` to run without initialization   
+#### `>  run.bat I` to initialize database   
+#### `>  run.bat` to run without initialization   
 to start the program.
 
 
