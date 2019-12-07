@@ -12,6 +12,11 @@ Implemented SQL procedures and functions to support the JDBC methods\
 Improved SQL relation schemas for better performance and modularity\
 Implemented Java methods and classes to accomplish user's operations
 
+### Phase 3
+Fully implemented end-user interface, interfaced JDBC methods with through controller's logic\
+Added concurrency control to prevent dirty read and write of the table through postgresql transaction\
+Performed testing on JDBC and SQL functions and black-box testing from end-user's perspective.
+
 
 ## How to run
 ###### prerequisites: 
