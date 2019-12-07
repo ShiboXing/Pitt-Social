@@ -9,7 +9,7 @@ public class DataManager {
     final private String triggerSource = "DataSource/trigger.sql";
     final private String testSource = "DataSource/test.sql";
     final private String adminUser = "postgres";
-    final private String adminPassword = "team3";
+    final private String adminPassword = "postgres";
     final private String databaesUrl = "jdbc:postgresql://localhost/postgres";
     private Connection _conn;
 

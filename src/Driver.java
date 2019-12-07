@@ -1131,7 +1131,7 @@ public class Driver {
         int groupId;
         while (true) {
             try {
-                System.out.print("Input User Id: ");
+                System.out.print("Input Group Id: ");
                 groupId = Integer.parseInt(console.readLine());
                 break;
             } catch (NumberFormatException e) {
