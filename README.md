@@ -3,9 +3,9 @@ This project is a social networking system for University of Pittsburgh built wi
 Contributors: [Fangzheng Guo](https://github.com/toobbby), [Zhuolun Li](https://github.com/Zhuolun1996) and [Shibo Xing](https://github.com/ShiboXing)
 
 ### Phase 1
-Instantiated schemas and all relations with contraints\
-Defined triggers on tables\
-Generated sample data 
+Instantiated schemas and all relations with integrity contraints\
+Defined triggers on tables for further SQL development\
+Generated sample data for initial testing of the schema
 
 ### Phase 2
 Implemented SQL procedures and functions to support the JDBC methods\
@@ -13,8 +13,8 @@ Improved SQL relation schemas for better performance and modularity\
 Implemented Java methods and classes to accomplish user's operations
 
 ### Phase 3
-Fully implemented end-user interface, interfaced JDBC methods with through controller's logic\
-Added concurrency control to prevent dirty read and write of the table through postgresql transaction\
+Fully implemented end-user interface, combined with JDBC methods with through controller's logic\
+Added concurrency control to prevent dirty reads and writes of the table through postgresql transaction\
 Performed testing on JDBC and SQL functions and black-box testing from end-user's perspective.
 
 
