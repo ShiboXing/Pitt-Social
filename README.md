@@ -25,7 +25,7 @@ In the root directory of the repository, you can run:<br>
 
 after compiling, you can run:
 
-#### `$  sh ./run.sh I` to initialized database   
+#### `$  sh ./run.sh I` to initialize database   
 #### `$  sh ./run.sh` to run without initialization
 to start the program.   
 
@@ -34,7 +34,7 @@ to start the program.
 Run <br>
 #### `>  compile.bat` to compile.
 
-#### `$  ./run.bat I` to initialized database   
+#### `$  ./run.bat I` to initialize database   
 #### `$  ./run.bat` to run without initialization   
 to start the program.
 
