@@ -1062,6 +1062,7 @@ public class Driver {
         flushConsole();
         printDisplayTopKMessagesMenu();
         int k;
+        int x;
         while (true) {
             System.out.println("Please input the number of users you want to show, (E) to exit display top k messages...");
             String confirm = console.readLine();
@@ -1070,13 +1071,15 @@ public class Driver {
             } else {
                 try {
                     k = Integer.parseInt(confirm);
+                    System.out.println("Input the time range(month):");
+                    x = Integer.parseInt(console.readLine());
                     break;
                 } catch (NumberFormatException e) {
                     System.err.println("Please enter an Integer Number");
                 }
             }
         }
-        System.out.println(pittSocial.displayTopKMessages(k));
+        System.out.println(pittSocial.displayTopKMessages(k, x));
 
         InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Display Top k Messages Success, Press Enter...");
         console.reader().read();

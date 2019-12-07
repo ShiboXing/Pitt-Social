@@ -318,14 +318,14 @@ public class PittSocial {
         return createDisplayThreeDegreesBody(rs, 50);
     }
 
-    public String displayTopKMessages(int k) throws SQLException {
+    public String displayTopKMessages(int k, int x) throws SQLException {
         PreparedStatement st = _conn.prepareStatement("select * from topMessages(?, ?, ?)");
         st.setInt(1, currentUserId);
         st.setInt(2, k);
         Date currentDate = new Date(System.currentTimeMillis());
         Calendar c = Calendar.getInstance();
         c.setTime(currentDate);
-        c.add(Calendar.MONTH, -6);
+        c.add(Calendar.MONTH, 0 - x);
         st.setTimestamp(3, new Timestamp(c.getTimeInMillis()));
         ResultSet rs = st.executeQuery();
         return createDisplayTopMessageBody(rs, 20, 20);
