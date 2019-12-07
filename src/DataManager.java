@@ -24,8 +24,8 @@ public class DataManager {
     public void initDatabase(boolean isInitiate) throws SQLException, IOException {
         if (isInitiate) {
             executeSQLFile(this.schemaSource);
+            executeSQLFile(this.testSource);
             executeSQLFile(this.triggerSource);
-//        executeSQLFile(this.testSource);
         } else {
             PreparedStatement st = _conn.prepareStatement("set search_path to pitt_social;");
             st.execute();
