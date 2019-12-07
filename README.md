@@ -15,15 +15,13 @@ Implemented Java methods and classes to accomplish user's operations
 
 ## How to run
 ###### prerequisites: 
-###### have Java 8 or higher installed on your local machine, a postgresql database installed on localhost
-### Mac users:
+###### have Java 8 installed on your local machine, a postgresql database installed on localhost
+### Unix/Linux users:
 First change the credentials in
 <h4> <code>src/DataManager.java</code> </h4> in accordance with your postgresql database <br> <br>
 
 In the root directory of the repository, you can run:<br>
-#### `$  sh ./compile.sh`
-
-after compiling, you can run:
+#### `$  sh ./compile.sh` to compile. <br>
 
 #### `$  sh ./run.sh I` to initialize database   
 #### `$  sh ./run.sh` to run without initialization
@@ -32,7 +30,7 @@ to start the program.
 
 ### Windows users:
 Run <br>
-#### `>  compile.bat` to compile.
+#### `>  compile.bat` to compile. <br>
 
 #### `$  ./run.bat I` to initialize database   
 #### `$  ./run.bat` to run without initialization   
