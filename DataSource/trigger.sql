@@ -215,12 +215,11 @@ $$ language plpgsql;
 
 
 drop trigger if exists checkIfInGroup on pendinggroupmember;
-create trigger autoSave
+create trigger checkIfInGrouo
     before
         INSERT
     ON pendinggroupmember
     FOR EACH ROW
-
 execute procedure checkIfInGroup();
 
 --confirmRequests
