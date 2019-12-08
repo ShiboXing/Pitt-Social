@@ -1072,7 +1072,13 @@ public class PittSocial {
         String confirm = console.readLine();
         if (confirm.equalsIgnoreCase("Y")) {
             InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Initiating Adding Group...");
-            pittSocial.initiateAddingGroup(groupId, message);
+            try {
+                pittSocial.initiateAddingGroup(groupId, message);
+            }catch (PSQLException e){
+                System.err.println("You are already in this group!");
+                InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Initiate Adding Group, Press Enter...");
+                console.reader().read();
+            }
             InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Initiate Adding Group Success, Press Enter...");
             console.reader().read();
         } else {
