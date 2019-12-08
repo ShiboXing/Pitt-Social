@@ -539,4 +539,29 @@ public class PittSocial {
 
         return res.toString();
     }
+
+    public void printTable(String tableName, char[] cols) throws SQLException {
+        PreparedStatement st = _conn.prepareStatement("select * from ?");
+        st.setString(1, tableName);
+        st = _conn.prepareStatement(st.toString().replace("'",""));
+        ResultSet rs = st.executeQuery();
+        System.out.println("print out of Table "+tableName+": \n");
+         while (rs.next()) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0;i<cols.length;i++) {
+                if (cols[i] == 's') {
+                    sb.append("   "+rs.getString(i + 1));
+                } else if (cols[i] == 'i') {
+                    sb.append("   "+rs.getInt(i + 1));
+                } else if (cols[i] == 't') {
+                    sb.append("   "+rs.getTimestamp(i + 1));
+                }
+            }
+            System.out.println(sb);
+        }
+        System.out.println("---------------------------------------------------");
+
+
+
+    }
 }

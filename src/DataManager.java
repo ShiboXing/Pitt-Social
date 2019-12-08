@@ -24,6 +24,16 @@ public class DataManager {
     public void initDatabase(boolean isInitiate) throws SQLException, IOException {
         if (isInitiate) {
             executeSQLFile(this.schemaSource);
+            executeSQLFile(this.triggerSource);
+        } else {
+            PreparedStatement st = _conn.prepareStatement("set search_path to pitt_social;");
+            st.execute();
+        }
+    }
+
+    public void initDatabaseWithTest(boolean isInitiate) throws SQLException, IOException {
+        if (isInitiate) {
+            executeSQLFile(this.schemaSource);
             executeSQLFile(this.testSource);
             executeSQLFile(this.triggerSource);
         } else {
@@ -31,6 +41,8 @@ public class DataManager {
             st.execute();
         }
     }
+
+
 
     public Connection getConnection()
     {
@@ -47,7 +59,7 @@ public class DataManager {
         while ((line = reader.readLine()) != null) {
             lines.append(line+'\n');
         }
-        System.out.println("queries: " + lines.toString());
+        //System.out.println("queries: " + lines.toString());
         statement.execute(lines.toString());
     }
 

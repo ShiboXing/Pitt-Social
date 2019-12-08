@@ -630,3 +630,5 @@ values(1,'ewww!',2,null,'2019-05-08 04:25:52');*/
 --select * from showfriendrequests(4);
 
 --call confirmFriend(1,2);
+
+select * from profile;
