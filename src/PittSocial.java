@@ -111,9 +111,10 @@ public class PittSocial {
             st.execute();
             _conn.commit();
         } catch (SQLException e) {
+
+            e.printStackTrace();
+            _conn.rollback();
             throw e;
-            //e.printStackTrace();
-           // _conn.rollback();
         } finally {
             _conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             _conn.setAutoCommit(true);
