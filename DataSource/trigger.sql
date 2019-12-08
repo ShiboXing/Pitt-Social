@@ -198,6 +198,30 @@ begin
     insert into pendinggroupmember(gid, userid, message) values (groupid, thisuserid, addinginquiry);
 end;
 $$ language plpgsql;
+--trigger: before inserting into pendinggroupmember, check if this user is already in group
+
+create or replace function checkIfInGroup() returns trigger as
+$$
+begin
+
+    if new.userid in (select userid from groupMember where gid = new.gid)   then
+        raise exception 'User already in this group!';
+
+    end if;
+    return new;
+end;
+$$ language plpgsql;
+
+
+
+drop trigger if exists checkIfInGroup on pendinggroupmember;
+create trigger autoSave
+    before
+        INSERT
+    ON pendinggroupmember
+    FOR EACH ROW
+
+execute procedure checkIfInGroup();
 
 --confirmRequests
 create or replace function showFriendRequests(thisuserid int) returns table (tid int, msg varchar) as
