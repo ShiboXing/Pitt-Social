@@ -111,8 +111,9 @@ public class PittSocial {
             st.execute();
             _conn.commit();
         } catch (SQLException e) {
-            e.printStackTrace();
-            _conn.rollback();
+            throw e;
+            //e.printStackTrace();
+           // _conn.rollback();
         } finally {
             _conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             _conn.setAutoCommit(true);
@@ -1074,12 +1075,12 @@ public class PittSocial {
             InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Initiating Adding Group...");
             try {
                 pittSocial.initiateAddingGroup(groupId, message);
-            }catch (PSQLException e){
+            }catch (SQLException e){
                 System.err.println("You are already in this group!");
                 InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Initiate Adding Group, Press Enter...");
                 console.reader().read();
             }
-            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Initiate Adding Group Success, Press Enter...");
+            InfoPrinter.printWithColor(ConsoleColors.GREEN_BRIGHT, "Initiate Adding Group Finished, Press Enter...");
             console.reader().read();
         } else {
             InfoPrinter.printWithColor(ConsoleColors.RED_BRIGHT, "Cancelled Initiate Adding Group, Press Enter...");
