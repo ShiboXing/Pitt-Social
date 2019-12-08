@@ -545,7 +545,7 @@ public class PittSocial {
         st.setString(1, tableName);
         st = _conn.prepareStatement(st.toString().replace("'",""));
         ResultSet rs = st.executeQuery();
-        System.out.println("print out of Table "+tableName+": \n");
+        System.out.println("printout of Table "+tableName+": \n");
          while (rs.next()) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0;i<cols.length;i++) {
@@ -555,6 +555,8 @@ public class PittSocial {
                     sb.append("   "+rs.getInt(i + 1));
                 } else if (cols[i] == 't') {
                     sb.append("   "+rs.getTimestamp(i + 1));
+                } else if (cols[i] == 'd') {
+                    sb.append("   "+rs.getDate(i + 1));
                 }
             }
             System.out.println(sb);

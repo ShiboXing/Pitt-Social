@@ -22,7 +22,12 @@ public class Driver {
             dataManager.initDatabase(true);
 
 
-            char[] profileCols = {'i','s','s','s','t',};
+            char[] profileCols = {'i','s','s','s','d','t'};
+            char[] groupInfoCols = {'i','s','i','s'};
+            char[] groupMemberCols = {'i','i','s'};
+            char[] pendingGroupMemberCols = {'i','i','s'};
+            char[] pendingFriendCols = {'i','i','s'};
+            char[] friendCols = {'i','i','d','s'};
 
 
             //test createuser
@@ -42,88 +47,162 @@ public class Driver {
             pittSocial.printTable("Profile", profileCols);
 
             //test initiateFriend
-            System.out.println(pittSocial.login("1@1.org", "111"));
+            pittSocial.login("1@1.org", "111");
             pittSocial.initiateFriendship(4, "i'm NO. 1, add me NO. 4");
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
             pittSocial.initiateFriendship(2, "i'm NO. 1, add me NO. 2");
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("2@2.org", "222"));
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("2@2.org", "222");
             pittSocial.initiateFriendship(3, "i'm NO. 2, add me NO. 3");
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
             pittSocial.initiateFriendship(1, "i'm NO. 2, add me NO. 1");
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
             pittSocial.initiateFriendship(5, "i'm NO. 2, add me NO. 5");
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
             pittSocial.initiateFriendship(7, "i'm NO. 2, add me NO. 7");
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("3@3.org", "333"));
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("3@3.org", "333");
             pittSocial.initiateFriendship(1, "i'm NO. 3, add me NO. 1");
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
             pittSocial.initiateFriendship(2, "i'm NO. 3, add me NO. 2");
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
 
             //test create group
-            pittSocial.createGroup("lame", 5, "group 1 description");
+            pittSocial.createGroup("lame1", 5, "group 1 description");
+            pittSocial.printTable("GroupInfo", groupInfoCols);
+            pittSocial.printTable("GroupMember", groupMemberCols);
             pittSocial.createGroup("lame2", 5, "group 2 description");
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("1@1.org", "111"));
-            pittSocial.createGroup("not lame", 5, "group 3 description");
+            pittSocial.printTable("GroupInfo", groupInfoCols);
+            pittSocial.printTable("GroupMember", groupMemberCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+            pittSocial.login("1@1.org", "111");
+            pittSocial.createGroup("lame3", 5, "group 3 description");
+            pittSocial.printTable("GroupInfo", groupInfoCols);
+            pittSocial.printTable("GroupMember", groupMemberCols);
 
-            //test initiateGroup
+            //test initiateGroupRequest
             pittSocial.initiateAddingGroup(1, "my id is 1, put me into group 1");
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
             pittSocial.initiateAddingGroup(2, "my id is 1, put me into group 2");
-            System.out.println(pittSocial.logout());
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
 
-            System.out.println(pittSocial.login("2@2.org", "222"));
+            pittSocial.login("2@2.org", "222");
             pittSocial.initiateAddingGroup(2, "my id is 2, put me into group 2");
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("5@5.org", "555"));
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("5@5.org", "555");
             pittSocial.initiateAddingGroup(3, "my id is 5, put me into group 3");
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("4@4.org", "444"));
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("4@4.org", "444");
             pittSocial.initiateAddingGroup(1, "my id is 4, put me into group 1");
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
             pittSocial.initiateAddingGroup(2, "my id is 4, put me into group 2");
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
             pittSocial.initiateFriendship(7, "AAA");
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("6@6.org", "666"));
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("6@6.org", "666");
             pittSocial.initiateAddingGroup(2, "my id is 6, put me into group 2");
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("7@7.org", "777"));
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("7@7.org", "777");
             pittSocial.initiateAddingGroup(2, "my id is 7, put me into group 2");
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
 
             // test showFriendsRequests
             System.err.println(pittSocial.showFriendRequests());
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("1@1.org", "111"));
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+            pittSocial.login("1@1.org", "111");
             System.err.println(pittSocial.showFriendRequests());
 
             //test showGroupRequests
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("3@3.org", "333"));
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+            pittSocial.login("3@3.org", "333");
             System.err.println(pittSocial.showGroupRequests());
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("1@1.org", "111"));
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+            pittSocial.login("1@1.org", "111");
             System.err.println(pittSocial.showGroupRequests());
 
-//        test confirm friend and group requests
+            //test confirm friend and group requests
             pittSocial.resolveFriendRequest(2, false);
+            pittSocial.printTable("Friend", friendCols);
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
             pittSocial.resolveFriendRequest(3, true);
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("5@5.org", "555"));
-            pittSocial.resolveFriendRequest(2, true);
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("2@2.org", "222"));
-            pittSocial.resolveFriendRequest(3, true);
-            pittSocial.resolveFriendRequest(1, true);
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("7@7.org", "777"));
-            pittSocial.resolveFriendRequest(4, true);
-            pittSocial.resolveFriendRequest(2, true);
+            pittSocial.printTable("Friend", friendCols);
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
 
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("3@3.org", "333"));
-            System.out.println(pittSocial.resolveGroupRequest(1, 4, false));
-            System.out.println(pittSocial.resolveGroupRequest(2, 4, false));
-            System.out.println(pittSocial.resolveGroupRequest(2, 2, true));
-            System.out.println(pittSocial.resolveGroupRequest(2, 7, true));
-            System.out.println(pittSocial.resolveGroupRequest(2, 6, true));
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("1@1.org", "111"));
+            pittSocial.login("5@5.org", "555");
+            pittSocial.resolveFriendRequest(2, true);
+            pittSocial.printTable("Friend", friendCols);
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("2@2.org", "222");
+            pittSocial.resolveFriendRequest(3, true);
+            pittSocial.printTable("Friend", friendCols);
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
+            pittSocial.resolveFriendRequest(1, true);
+            pittSocial.printTable("Friend", friendCols);
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("7@7.org", "777");
+            pittSocial.resolveFriendRequest(4, true);
+            pittSocial.printTable("Friend", friendCols);
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
+            pittSocial.resolveFriendRequest(2, true);
+            pittSocial.printTable("Friend", friendCols);
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("3@3.org", "333");
+            pittSocial.resolveGroupRequest(1, 4, false);
+            pittSocial.printTable("GroupMember", groupMemberCols);
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
+            pittSocial.resolveGroupRequest(2, 4, false);
+            pittSocial.printTable("GroupMember", groupMemberCols);
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
+            pittSocial.resolveGroupRequest(2, 2, true);
+            pittSocial.printTable("GroupMember", groupMemberCols);
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
+            pittSocial.resolveGroupRequest(2, 7, true);
+            pittSocial.printTable("GroupMember", groupMemberCols);
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
+            pittSocial.resolveGroupRequest(2, 6, true);
+            pittSocial.printTable("GroupMember", groupMemberCols);
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);;
+
+            pittSocial.login("1@1.org", "111");
             pittSocial.resolveGroupRequest(3, 5, true);
+            pittSocial.printTable("GroupMember", groupMemberCols);
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
 
             //test sendMessageToUser
             System.out.println(pittSocial.logout());
