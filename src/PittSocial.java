@@ -304,10 +304,14 @@ public class PittSocial {
         return result;
     }
 
-    public String searchForUser(String keyword) throws SQLException {
-        PreparedStatement st = _conn.prepareStatement("select * from searchForUser(?)");
-        st.setString(1, "%" + keyword + "%");
-        ResultSet rs = st.executeQuery();
+    public String searchForUser(String keywordListString) throws SQLException {
+        ArrayList<ResultSet> resultSetList = new ArrayList<>();
+        for (String keyword : keywordListString.split(" ")) {
+            PreparedStatement st = _conn.prepareStatement("select * from searchForUser(?)");
+            st.setString(1, "%" + keyword + "%");
+            ResultSet rs = st.executeQuery();
+            resultSetList.add(rs);
+        }
         return createDisplaySearchUserBody(rs, 20, 20, 20);
     }
 
@@ -474,7 +478,7 @@ public class PittSocial {
         return res.toString();
     }
 
-    private String createDisplaySearchUserBody(ResultSet rs, int firstWidth, int secondWidth, int thirdWidth) throws SQLException {
+    private String createDisplaySearchUserBody(ArrayList<ResultSet> rsList, int firstWidth, int secondWidth, int thirdWidth) throws SQLException {
         StringBuilder res = new StringBuilder();
         res.append(InfoPrinter.createTitle("Search for User", firstWidth + secondWidth + thirdWidth + 7));
         String format = "|%1$" + firstWidth + "s | %2$" + secondWidth + "s | %3$" + thirdWidth + "s" + " |";
@@ -484,8 +488,10 @@ public class PittSocial {
         String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 7) +
                 "|\n";
         res.append(head2);
-        while (rs.next()) {
-            res.append(String.format(format, rs.getInt(1), rs.getString(2), rs.getString(3))).append('\n');
+        for (ResultSet rs : rsList) {
+            while (rs.next()) {
+                res.append(String.format(format, rs.getInt(1), rs.getString(2), rs.getString(3))).append('\n');
+            }
         }
         res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 7)).append("|\n");
 
