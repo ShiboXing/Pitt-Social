@@ -28,8 +28,8 @@ First change the credentials in
 In the root directory of the repository, you can run:<br>
 #### `$  sh ./compile.sh` to compile. <br>
 
-#### `$  sh ./run.sh I` to initialize database   
-#### `$  sh ./run.sh` to run without initialization
+#### `$  sh ./runApplication.sh I` to initialize database   
+#### `$  sh ./runApplication.sh` to run without initialization
 to start the program.   
 
 
@@ -37,8 +37,8 @@ to start the program.
 Run <br>
 #### `>  compile.bat` to compile. <br>
 
-#### `>  run.bat I` to initialize database   
-#### `>  run.bat` to run without initialization   
+#### `>  runApplication.bat I` to initialize database   
+#### `>  runApplication.bat` to run without initialization   
 to start the program.
 
 

@@ -302,13 +302,57 @@ public class Driver {
             pittSocial.login("2@2.org", "222");
             pittSocial.displayProfile(7);
 
+            //test searchForUser
+            System.out.println(pittSocial.searchForUser("hoho 2 2 1 2"));
+            System.out.println(pittSocial.searchForUser("org"));
+            System.out.println(pittSocial.searchForUser("jojo 3 4"));
+            System.out.println(pittSocial.searchForUser("nonsense query"));
+
+            //test threeDegrees
+            System.out.println(pittSocial.threeDegrees(1));
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("7@7.org", "777");
+            System.out.println(pittSocial.threeDegrees(1));
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("1@1.org", "111");
+            System.out.println(pittSocial.threeDegrees(5));
+
+            //test topMessages
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("2@2.org", "222");
+            System.out.println(pittSocial.displayTopKMessages(3,1));
+            System.out.println(pittSocial.displayTopKMessages(1,1));
+            System.out.println(pittSocial.displayTopKMessages(2,6));
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("3@3.org", "333");
+            System.out.println(pittSocial.displayTopKMessages(10000,10));
+
+
+            //test dropUser
+            pittSocial.dropUser();
+            pittSocial.printTable("Profile", profileCols);
+            pittSocial.login("7@7.org", "777");
+            pittSocial.dropUser();
+            pittSocial.printTable("Profile", profileCols);
+
+
+
+
             //insert the test data from DataSource
-            System.out.println("\n\n---------------------- REINITIALIZING DATABASE WITH TEST DATA FROM SQL ----------------------\n\n");
-            dataManager.initDatabaseWithTest(true);
+
+            //System.out.println("\n\n---------------------- REINITIALIZING DATABASE WITH TEST DATA FROM SQL ----------------------\n\n");
+            //dataManager.initDatabaseWithTest(true);
 
         } else {
             dataManager.initDatabase(false);
         }
-        /*---- schema.sql contains 'set search_path to pitt_social;' !!! --- */
     }
 }

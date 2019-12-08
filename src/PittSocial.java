@@ -312,7 +312,7 @@ public class PittSocial {
             ResultSet rs = st.executeQuery();
             resultSetList.add(rs);
         }
-        return createDisplaySearchUserBody(rs, 20, 20, 20);
+        return createDisplaySearchUserBody(resultSetList, 20, 20, 20);
     }
 
     public String threeDegrees(int targetUserId) throws SQLException {
@@ -343,6 +343,7 @@ public class PittSocial {
             PreparedStatement st = _conn.prepareStatement("call dropuser(?)");
             st.setInt(1, this.currentUserId);
             this.logout();
+            _conn.setAutoCommit(false); //log out will set autoCommit back to true
             st.execute();
             _conn.commit();
         } catch (SQLException e) {
@@ -488,9 +489,13 @@ public class PittSocial {
         String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 7) +
                 "|\n";
         res.append(head2);
+        HashSet<Integer> userIds = new HashSet<>();
         for (ResultSet rs : rsList) {
             while (rs.next()) {
-                res.append(String.format(format, rs.getInt(1), rs.getString(2), rs.getString(3))).append('\n');
+                if (!userIds.contains(rs.getInt(1))) {
+                    res.append(String.format(format, rs.getInt(1), rs.getString(2), rs.getString(3))).append('\n');
+                    userIds.add(rs.getInt(1));
+                }
             }
         }
         res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + thirdWidth + 7)).append("|\n");
@@ -530,19 +535,19 @@ public class PittSocial {
 
     private String createDisplayTopMessageBody(ResultSet rs, int firstWidth, int secondWidth) throws SQLException {
         StringBuilder res = new StringBuilder();
-        res.append(InfoPrinter.createTitle("Top Message Users", firstWidth + secondWidth + 4));
-        String format = "|%1$" + firstWidth + "s |";
+        res.append(InfoPrinter.createTitle("Top Message Users", firstWidth + secondWidth + 3));
+        String format = "|%1$" + firstWidth + "s |%2$" + secondWidth + "s |";
         String head = String.format(format, "User Id", "User Name") + '\n';
 
         res.append(head);
-        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + 4) +
+        String head2 = "|" + InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + 3) +
                 "|\n";
         res.append(head2);
         while (rs.next()) {
             int _userId = rs.getInt(1);
             res.append(String.format(format, _userId, this.getUserNameFromId(_userId))).append('\n');
         }
-        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + 4)).append("|\n");
+        res.append("|").append(InfoPrinter.paddingCharacter('-', firstWidth + secondWidth + 3)).append("|\n");
 
         return res.toString();
     }
@@ -1560,7 +1565,7 @@ public class PittSocial {
         DataManager dataManager = new DataManager();
         PittSocial pittSocial = new PittSocial(dataManager.getConnection());
         if (args.length == 1 && args[0].equalsIgnoreCase("I")) {
-            dataManager.initDatabase(true);
+            dataManager.initDatabaseWithTest(true);
         }
         enterMainMenu(pittSocial);
     }
