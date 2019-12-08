@@ -28,6 +28,8 @@ public class Driver {
             char[] pendingGroupMemberCols = {'i','i','s'};
             char[] pendingFriendCols = {'i','i','s'};
             char[] friendCols = {'i','i','d','s'};
+            char[] messageInfoCols = {'i','i','s','i','i','t'};
+            char[] messageRecipientCols = {'i','i'};
 
 
             //test createuser
@@ -197,7 +199,7 @@ public class Driver {
             pittSocial.printTable("GroupMember", groupMemberCols);
             pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
             pittSocial.logout();
-            pittSocial.printTable("Profile", profileCols);;
+            pittSocial.printTable("Profile", profileCols);
 
             pittSocial.login("1@1.org", "111");
             pittSocial.resolveGroupRequest(3, 5, true);
@@ -205,62 +207,100 @@ public class Driver {
             pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
 
             //test sendMessageToUser
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("5@5.org", "555"));
-            System.err.println(pittSocial.sendMessageToUser(2, "5 saying hi to 2"));
-            System.err.println(pittSocial.sendMessageToUser(2, "5 saying hi to 2"));
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("2@2.org", "222"));
-            System.err.println(pittSocial.sendMessageToUser(5, "2 saying hi to 5"));
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("1@1.org", "111"));
-            System.err.println(pittSocial.sendMessageToUser(3, "1 saying hi to 3"));
-            System.err.println(pittSocial.sendMessageToUser(2, "1 saying hi to 2"));
-            System.err.println(pittSocial.sendMessageToUser(2, "1 saying hi to 2"));
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+            pittSocial.login("5@5.org", "555");
+            pittSocial.sendMessageToUser(2, "5 saying hi to 2");
+            pittSocial.printTable("MessageInfo", messageInfoCols);
+            pittSocial.printTable("MessageRecipient", messageRecipientCols);
+            pittSocial.sendMessageToUser(2, "5 saying hi to 2");
+            pittSocial.printTable("MessageInfo", messageInfoCols);
+            pittSocial.printTable("MessageRecipient", messageRecipientCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("2@2.org", "222");
+            pittSocial.sendMessageToUser(5, "2 saying hi to 5");
+            pittSocial.printTable("MessageInfo", messageInfoCols);
+            pittSocial.printTable("MessageRecipient", messageRecipientCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("1@1.org", "111");
+            pittSocial.sendMessageToUser(3, "1 saying hi to 3");
+            pittSocial.printTable("MessageInfo", messageInfoCols);
+            pittSocial.printTable("MessageRecipient", messageRecipientCols);
+            pittSocial.sendMessageToUser(2, "1 saying hi to 2");
+            pittSocial.printTable("MessageInfo", messageInfoCols);
+            pittSocial.printTable("MessageRecipient", messageRecipientCols);
+            pittSocial.sendMessageToUser(2, "1 saying hi to 2");
+            pittSocial.printTable("MessageInfo", messageInfoCols);
+            pittSocial.printTable("MessageRecipient", messageRecipientCols);
 
             //test sendMessageToGroup
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("5@5.org", "555"));
-            System.err.println(pittSocial.sendMessageToGroup(3, "5 saying hi to group 3"));
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("1@1.org", "111"));
-            System.err.println(pittSocial.sendMessageToGroup(3, "1 saying hi to group 3"));
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("6@6.org", "666"));
-            System.err.println(pittSocial.sendMessageToGroup(2, "6 saying hi to group 2"));
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("1@1.org", "111"));
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("5@5.org", "555");
+            pittSocial.sendMessageToGroup(3, "5 saying hi to group 3");
+            pittSocial.printTable("MessageInfo", messageInfoCols);
+            pittSocial.printTable("MessageRecipient", messageRecipientCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("1@1.org", "111");
+            pittSocial.sendMessageToGroup(3, "1 saying hi to group 3");
+            pittSocial.printTable("MessageInfo", messageInfoCols);
+            pittSocial.printTable("MessageRecipient", messageRecipientCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("6@6.org", "666");
+            pittSocial.sendMessageToGroup(2, "6 saying hi to group 2");
+            pittSocial.printTable("MessageInfo", messageInfoCols);
+            pittSocial.printTable("MessageRecipient", messageRecipientCols);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+            pittSocial.login("1@1.org", "111");
 
             //test display messages and display new messages
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("2@2.org", "222"));
-            System.err.println(pittSocial.displayMessages());
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("3@3.org", "333"));
-            System.err.println(pittSocial.displayMessages());
-            System.err.println(pittSocial.sendMessageToGroup(2, "3 saying hi to group 2"));
-            System.err.println(pittSocial.sendMessageToGroup(2, "3 saying hi to group 2"));
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("7@7.org", "777"));
-            System.err.println(pittSocial.sendMessageToUser(2, "7 saying hi to 2"));
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("2@2.org", "222"));
-            System.err.println(pittSocial.displayNewMessages());
-            System.err.println(pittSocial.displayMessages());
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("2@2.org", "222");
+            pittSocial.displayMessages();
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("3@3.org", "333");
+            pittSocial.displayMessages();
+            pittSocial.sendMessageToGroup(2, "3 saying hi to group 2");
+            pittSocial.sendMessageToGroup(2, "3 saying hi to group 2");
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("7@7.org", "777");
+            pittSocial.sendMessageToUser(2, "7 saying hi to 2");
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+
+            pittSocial.login("2@2.org", "222");
+            pittSocial.displayNewMessages();
+            pittSocial.displayMessages();
 
             //test displayFriends
-            System.err.println(pittSocial.displayFriends());
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("3@3.org", "333"));
-            System.err.println(pittSocial.displayFriends());
+            pittSocial.displayFriends();
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+            pittSocial.login("3@3.org", "333");
+            pittSocial.displayFriends();
 
             //test display profile
-            System.err.println(pittSocial.displayProfile(1));
-            System.out.println(pittSocial.logout());
-            System.out.println(pittSocial.login("2@2.org", "222"));
-            System.err.println(pittSocial.displayProfile(7));
-
-
+            pittSocial.displayProfile(1);
+            pittSocial.logout();
+            pittSocial.printTable("Profile", profileCols);
+            pittSocial.login("2@2.org", "222");
+            pittSocial.displayProfile(7);
 
             //insert the test data from DataSource
             System.out.println("\n\n---------------------- REINITIALIZING DATABASE WITH TEST DATA FROM SQL ----------------------\n\n");
