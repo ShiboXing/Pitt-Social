@@ -950,7 +950,7 @@ public class PittSocial {
     public static void enterShowThreeDegreesFriendsMenu(PittSocial pittSocial, Console console) throws IOException, InterruptedException, SQLException {
         flushConsole();
         printShowThreeDegreesFriendsMenu();
-        System.out.print("Input User Name: ");
+        System.out.print("Input User ID: ");
         int targetUserId;
         while (true) {
             try {
