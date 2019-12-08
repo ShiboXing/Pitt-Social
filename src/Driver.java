@@ -339,17 +339,28 @@ public class Driver {
             //test dropUser
             pittSocial.dropUser();
             pittSocial.printTable("Profile", profileCols);
+            pittSocial.printTable("Profile", profileCols);
+            pittSocial.printTable("Friend", friendCols);
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
+            pittSocial.printTable("MessageInfo", messageInfoCols);
+            pittSocial.printTable("MessageRecipient", messageRecipientCols);
+            pittSocial.printTable("GroupInfo", groupInfoCols);
+            pittSocial.printTable("GroupMember", groupMemberCols);
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
+
             pittSocial.login("7@7.org", "777");
             pittSocial.dropUser();
             pittSocial.printTable("Profile", profileCols);
+            pittSocial.printTable("Friend", friendCols);
+            pittSocial.printTable("PendingFriend", pendingFriendCols);
+            pittSocial.printTable("MessageInfo", messageInfoCols);
+            pittSocial.printTable("MessageRecipient", messageRecipientCols);
+            pittSocial.printTable("GroupInfo", groupInfoCols);
+            pittSocial.printTable("GroupMember", groupMemberCols);
+            pittSocial.printTable("PendingGroupMember", pendingGroupMemberCols);
 
+            System.out.println("\n\n---------------------- TEST RUN HAS ENDED ----------------------\n\n");
 
-
-
-            //insert the test data from DataSource
-
-            //System.out.println("\n\n---------------------- REINITIALIZING DATABASE WITH TEST DATA FROM SQL ----------------------\n\n");
-            //dataManager.initDatabaseWithTest(true);
 
         } else {
             dataManager.initDatabase(false);
